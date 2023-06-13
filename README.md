@@ -1,5 +1,4 @@
 # EasyGUI-Lightweight
-轻量化的GUI库
-适用于控制台程序 GDI
+Lightweight GUI library for console programs GDI
 
 ![image](https://github.com/Coslly/EasyGUI-Lightweight/blob/main/PAA.png?raw=true)
