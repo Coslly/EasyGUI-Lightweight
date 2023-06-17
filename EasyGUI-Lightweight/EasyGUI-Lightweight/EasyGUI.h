@@ -9,18 +9,66 @@
 using namespace std;
 namespace EasyGUI
 {
+    /*
+    int main()
+    {
+        ShowWindow(GetConsoleWindow(), true);//ShowConsoleWindow
+        EasyGUI::EasyGUI GUI_Variable;//Initialize GUI variables
+        GUI_Variable.Window_Create(600, 500, L"Test Window", false);
+        GUI_Variable.Window_SetAlpha(250);
+        GUI_Variable.Global_Set_EasyGUI_Color({ 200,200,255 });
+        while (1)
+        {
+            static BOOL Checkbox = false;
+            static int Slider_int = 5;
+            static float Slider_float = 5;
+            static BOOL Button = false;
+            static int KeySelect = 4;
+            if (!GUI_Variable.Window_Move())//MoveWindow Funtion
+            {
+                short Part = GUI_Variable.GUI_BackGround_Multi_interface(3, "Free(CS)", { "Part 1","Part 2" ,"Part 3" });//BackGround
+                if (Part == 1)
+                {
+                    vector<int> Block = GUI_Variable.GUI_Block(170, 30, 400, "Block");//Block
+                    GUI_Variable.GUI_Checkbox(Block, 1, "This is a Checkbox.", Checkbox);
+                    GUI_Variable.GUI_KeySelect<class A_1>(Block, 1, KeySelect);
+                    GUI_Variable.GUI_Slider<int, class A_2>(Block, 2, "Slider int", 0, 10, Slider_int);
+                    GUI_Variable.GUI_Slider<float, class A_3>(Block, 3, "Slider float", 0, 10, Slider_float);
+                    GUI_Variable.GUI_Button(Block, 4, "Button", 90, Button);
+                    static int ButtonClick = 0;
+                    if (Button)
+                    {
+                        ButtonClick++;
+                        Beep(100, 20);
+                    }
+                    GUI_Variable.GUI_Text(Block, 5, "Button: " + to_string(ButtonClick));
+                    GUI_Variable.GUI_Tips(Block, 1, "Some Tips.");
+                }
+                else if (Part == 2)
+                {
+                    vector<int> Block = GUI_Variable.GUI_Block(170, 30, 200, "Ah");//Block
+                    GUI_Variable.GUI_Checkbox(Block, 1, "This is a Checkbox 2.", Checkbox);
+                    GUI_Variable.GUI_KeySelect<class A_4>(Block, 1, KeySelect);
+                    GUI_Variable.GUI_Slider<int, class A_5>(Block, 2, "Slider int", 0, 100, Slider_int);
+                    GUI_Variable.GUI_Button(Block, 4, "Button", 90, Button);
+                }
+                GUI_Variable.Draw_GUI();
+            }
+        }
+    }
+    */
     //---------------------------------------------------------------------------------------------------------------------------------------------------------
-    LRESULT WINAPI EasyGUI_WndProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp) noexcept//¸¨Öú
+    LRESULT WINAPI EasyGUI_WndProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp) noexcept//è¾…åŠ©
     {
         switch (msg)
         {
         case WM_ERASEBKGND:return TRUE; break;
-        case WM_PAINT:return TRUE; break;//Ò»Ö±ÖØ»æ
+        case WM_PAINT:return TRUE; break;//ä¸€ç›´é‡ç»˜
         }
-        return DefWindowProcW(hwnd, msg, wp, lp);  //¶¨Òå»Øµ÷º¯ÊıµÄ·µ»ØÖµ
+        return DefWindowProcW(hwnd, msg, wp, lp);  //å®šä¹‰å›è°ƒå‡½æ•°çš„è¿”å›å€¼
     }
     //---------------------------------------------------------------------------------------------------------------------------------------------------------
-    void Message()
+    void Message() noexcept
     {
         MSG msg = { 0 };
         if (GetMessageW(&msg, 0, 0, 0))
@@ -32,23 +80,23 @@ namespace EasyGUI
     //---------------------------------------------------------------------------------------------------------------------------------------------------------
     class EasyGUI
     {
-        //-----------²Ëµ¥·ç¸ñ
-        LPCWSTR Global_EasyGUIFont = L"Small Fonts";//È«¾Ö×ÖÌå
-        int Global_EasyGUIFontSize = 14;//×ÖÌå´óĞ¡
-        vector<int> Global_EasyGUIColor = { 255,255,255 };//È«¾ÖÖ÷ÌâÑÕÉ«
-        short Global_EasyGUIStyleCode = 1337;//È«¾Ö²Ëµ¥·ç¸ñ´úÂë
+        //-----------èœå•é£æ ¼
+        LPCWSTR Global_EasyGUIFont = L"Small Fonts";//å…¨å±€å­—ä½“
+        int Global_EasyGUIFontSize = 14;//å­—ä½“å¤§å°
+        vector<int> Global_EasyGUIColor = { 255,255,255 };//å…¨å±€ä¸»é¢˜é¢œè‰²
+        short Global_EasyGUIStyleCode = 1337;//å…¨å±€èœå•é£æ ¼ä»£ç 
         //------------------
         HWND EasyGUI_WindowHWND = NULL;//GUI Window HWND
         HDC EasyGUI_WindowHDC = NULL;//GUI Window HDC
-        vector<int> PaintSize;//DoubleBufferPaint Size »­²¼´óĞ¡
-        HDC EasyGUI_DrawHDC = NULL;//EasyGUI DrawHDC GUIÒª»æÖÆµÄHDC
+        vector<int> PaintSize;//DoubleBufferPaint Size ç”»å¸ƒå¤§å°
+        HDC EasyGUI_DrawHDC = NULL;//EasyGUI DrawHDC GUIè¦ç»˜åˆ¶çš„HDC
         //------------------
         BOOL Mouse_Block_ = false;
         BOOL Mouse_Slider_ = false;
         //---------------------------------------------------------------------
-        void DrawRect(int X, int Y, int XX, int YY, vector<int>Color) noexcept//»æÖÆ¾ØĞÎ (·½±ãÖÆ×÷GUI)
+        void DrawRect(int X, int Y, int XX, int YY, vector<int>Color) noexcept//ç»˜åˆ¶çŸ©å½¢ (æ–¹ä¾¿åˆ¶ä½œGUI)
         {
-            //------------------------³õÊ¼»¯
+            //------------------------åˆå§‹åŒ–
             TRIVERTEX vert[2]; GRADIENT_RECT gRect;
             vert[0].Alpha = 0x0000; vert[1].Alpha = 0x0000;
             gRect.UpperLeft = 0; gRect.LowerRight = 1;
@@ -67,9 +115,9 @@ namespace EasyGUI
             GradientFill(EasyGUI_DrawHDC, vert, 2, &gRect, 1, GRADIENT_FILL_RECT_V);
         }
         //---------------------------------------------------------------------
-        void DrawGradientRect(int X, int Y, int XX, int YY, vector<int>Color_1, vector<int> Color_2, BOOL Draw_Style) noexcept//»æÖÆ½¥±ä¾ØĞÎ (·½±ãÖÆ×÷GUI)
-        {//false = ºáÏò; true = ÊúÏò
-            //------------------------³õÊ¼»¯
+        void DrawGradientRect(int X, int Y, int XX, int YY, vector<int>Color_1, vector<int> Color_2, BOOL Draw_Style) noexcept//ç»˜åˆ¶æ¸å˜çŸ©å½¢ (æ–¹ä¾¿åˆ¶ä½œGUI)
+        {//false = æ¨ªå‘; true = ç«–å‘
+            //------------------------åˆå§‹åŒ–
             TRIVERTEX vert[2]; GRADIENT_RECT gRect;
             vert[0].Alpha = 0x0000; vert[1].Alpha = 0x0000;
             gRect.UpperLeft = 0; gRect.LowerRight = 1;
@@ -90,22 +138,22 @@ namespace EasyGUI
             else  GradientFill(EasyGUI_DrawHDC, vert, 2, &gRect, 1, GRADIENT_FILL_RECT_H);
         }
         //---------------------------------------------------------------------
-        void DrawString(int X, int Y, string String, vector<int> TextColor, short Fount_Size, LPCWSTR Fount_Name, short Font_Width) noexcept//»æÖÆÎÄ×Ö (·½±ãÖÆ×÷GUI)
+        void DrawString(int X, int Y, string String, vector<int> TextColor, LPCWSTR Fount_Name, short Fount_Size, short Font_Width) noexcept//ç»˜åˆ¶æ–‡å­— (æ–¹ä¾¿åˆ¶ä½œGUI)
         {
             HDC StringHdc = EasyGUI_DrawHDC;
             HGDIOBJ FontPen = SelectObject(StringHdc, CreateFont(Fount_Size, 0, 0, 0, Font_Width, FALSE, FALSE, 0, ANSI_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, FF_DONTCARE, Fount_Name));
-            SetTextColor(StringHdc, RGB(TextColor[0], TextColor[1], TextColor[2]));//ÎÄ×ÖÑÕÉ«
-            SetBkMode(StringHdc, TRANSPARENT);//±³¾°Í¸Ã÷
+            SetTextColor(StringHdc, RGB(TextColor[0], TextColor[1], TextColor[2]));//æ–‡å­—é¢œè‰²
+            SetBkMode(StringHdc, TRANSPARENT);//èƒŒæ™¯é€æ˜
             TextOutA(StringHdc, X, Y, String.c_str(), strlen(String.c_str()));
             DeleteObject(FontPen);
         }
-        void DrawString_Simple(int X, int Y, string String, vector<int> TextColor) noexcept//»æÖÆ¼òµ¥ÎÄ×Ö (·½±ãÖÆ×÷GUI)
+        void DrawString_Simple(int X, int Y, string String, vector<int> TextColor) noexcept//ç»˜åˆ¶ç®€å•æ–‡å­— (æ–¹ä¾¿åˆ¶ä½œGUI)
         {
             HDC StringHdc = EasyGUI_DrawHDC;
             HFONT h_Font = CreateFont(12, 0, 0, 0, FW_NORMAL, FALSE, FALSE, 0, ANSI_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, NONANTIALIASED_QUALITY, FF_DONTCARE, L"Small Fonts");
             HGDIOBJ FontPen = SelectObject(StringHdc, h_Font);
-            SetBkMode(StringHdc, TRANSPARENT);//±³¾°Í¸Ã÷
-            SetTextColor(StringHdc, RGB(0, 0, 0));//ÎÄ×ÖÑÕÉ«
+            SetBkMode(StringHdc, TRANSPARENT);//èƒŒæ™¯é€æ˜
+            SetTextColor(StringHdc, RGB(0, 0, 0));//æ–‡å­—é¢œè‰²
             TextOutA(StringHdc, X + 1, Y + 1, String.c_str(), strlen(String.c_str()));
             TextOutA(StringHdc, X - 1, Y - 1, String.c_str(), strlen(String.c_str()));
             TextOutA(StringHdc, X + 1, Y - 1, String.c_str(), strlen(String.c_str()));
@@ -114,21 +162,21 @@ namespace EasyGUI
             TextOutA(StringHdc, X - 1, Y, String.c_str(), strlen(String.c_str()));
             TextOutA(StringHdc, X, Y - 1, String.c_str(), strlen(String.c_str()));
             TextOutA(StringHdc, X, Y + 1, String.c_str(), strlen(String.c_str()));
-            SetTextColor(StringHdc, RGB(TextColor[0], TextColor[1], TextColor[2]));//ÎÄ×ÖÑÕÉ«
+            SetTextColor(StringHdc, RGB(TextColor[0], TextColor[1], TextColor[2]));//æ–‡å­—é¢œè‰²
             TextOutA(StringHdc, X, Y, String.c_str(), strlen(String.c_str()));
             DeleteObject(FontPen);
         }
         //---------------------------------------------------------------------
-        string GetKeyString(int VK_code) noexcept//Í¨¹ıVK¼üÂë»ñÈ¡°´¼üÃû³Æ
+        string GetKeyString(int VK_code) noexcept//é€šè¿‡VKé”®ç è·å–æŒ‰é”®åç§°
         {
             switch (VK_code)
             {
-            case 0x01: return "[M1]";//Êó±ê×ó¼ü
-            case 0x02: return "[M2]";//Êó±êÓÒ¼ü
-            case 0x03: return "[CAN]";//Êó±êÖĞ¶Ï´¦Àí
-            case 0x04: return "[M3]";//Êó±êÖĞ¼ü
-            case 0x05: return "[M4]";//Êó±ê²à¼üÏÂ
-            case 0x06: return "[M5]";//Êó±ê²à¼üÉÏ
+            case 0x01: return "[M1]";//é¼ æ ‡å·¦é”®
+            case 0x02: return "[M2]";//é¼ æ ‡å³é”®
+            case 0x03: return "[CAN]";//é¼ æ ‡ä¸­æ–­å¤„ç†
+            case 0x04: return "[M3]";//é¼ æ ‡ä¸­é”®
+            case 0x05: return "[M4]";//é¼ æ ‡ä¾§é”®ä¸‹
+            case 0x06: return "[M5]";//é¼ æ ‡ä¾§é”®ä¸Š
             case 0x07: return "[NONE]";
             case 0x08: return "[BACK]";
             case 0x09: return "[TAB]";
@@ -262,51 +310,51 @@ namespace EasyGUI
             case 0xDB: return "[[]";
             case 0xDD: return "[]]";
             case 0xDC: return "[\]";
-            default: return "[" + to_string(VK_code) + "]";//Èç¹ûÊ²Ã´¶¼²»ÊÇÖ±½Ó·µ»Ø±àÂë
+            default: return "[" + to_string(VK_code) + "]";//å¦‚æœä»€ä¹ˆéƒ½ä¸æ˜¯ç›´æ¥è¿”å›ç¼–ç 
             }
         }
         //---------------------------------------------------------------------
     public:
         //---------------------------------------------------------------------------------------------------------------------------------------------------------
-        void Global_Set_EasyGUI_Font(LPCWSTR Font) noexcept//ÉèÖÃÈ«¾ÖGUI×ÖÌå
+        void Global_Set_EasyGUI_Font(LPCWSTR Font) noexcept//è®¾ç½®å…¨å±€GUIå­—ä½“
         {
             Global_EasyGUIFont = Font;
         }
-        void Global_Set_EasyGUI_FontSize(int Size) noexcept//ÉèÖÃÈ«¾ÖGUI×ÖÌå´óĞ¡
+        void Global_Set_EasyGUI_FontSize(int Size) noexcept//è®¾ç½®å…¨å±€GUIå­—ä½“å¤§å°
         {
             Global_EasyGUIFontSize = Size;
         }
-        void Global_Set_EasyGUI_Color(vector<int> GlobalColor) noexcept//ÉèÖÃÈ«¾ÖÖ÷ÌâÑÕÉ«
+        void Global_Set_EasyGUI_Color(vector<int> GlobalColor) noexcept//è®¾ç½®å…¨å±€ä¸»é¢˜é¢œè‰²
         {
             Global_EasyGUIColor = GlobalColor;
         }
         //---------------------------------------------------------------------------------------------------------------------------------------------------------
-        BOOL Window_Create(int SizeX, int SizeY, LPCWSTR m_WindowTitle, BOOL IfTop) noexcept//´´½¨´°¿Ú
+        BOOL Window_Create(int SizeX, int SizeY, LPCWSTR m_WindowTitle, BOOL IfTop) noexcept//åˆ›å»ºçª—å£
         {
-            static int ´°¿ÚÀàĞÍ = WS_EX_LAYERED /* | WS_EX_TOOLWINDOW*/;
-            if (IfTop)´°¿ÚÀàĞÍ = WS_EX_TOPMOST | WS_EX_LAYERED /* | WS_EX_TOOLWINDOW*/;
+            static int çª—å£ç±»å‹ = WS_EX_LAYERED /* | WS_EX_TOOLWINDOW*/;
+            if (IfTop)çª—å£ç±»å‹ = WS_EX_TOPMOST | WS_EX_LAYERED /* | WS_EX_TOOLWINDOW*/;
             WNDCLASS RenderWindowM;
             memset(&RenderWindowM, 0, sizeof(RenderWindowM));
             RenderWindowM.style = CS_HREDRAW | CS_VREDRAW;
-            RenderWindowM.lpfnWndProc = EasyGUI_WndProc;//¹ØÁªÏûÏ¢´¦Àíº¯Êı,¸æËß²Ù×÷ÏµÍ³£¬Èç¹ûÓĞÊÂ¼ş·¢Éúµ÷ÓÃÕâ¸öº¯Êı
+            RenderWindowM.lpfnWndProc = EasyGUI_WndProc;//å…³è”æ¶ˆæ¯å¤„ç†å‡½æ•°,å‘Šè¯‰æ“ä½œç³»ç»Ÿï¼Œå¦‚æœæœ‰äº‹ä»¶å‘ç”Ÿè°ƒç”¨è¿™ä¸ªå‡½æ•°
             RenderWindowM.cbClsExtra = 0;
             RenderWindowM.cbWndExtra = 0;
-            RenderWindowM.hInstance = GetModuleHandle(NULL);//ÊµÀı¾ä±ú
-            RenderWindowM.hIcon = LoadIcon(NULL, IDI_SHIELD);//Í¼±ê
-            RenderWindowM.hCursor = LoadCursor(NULL, IDC_ARROW);//¹â±êÑùÊ½
-            RenderWindowM.hbrBackground = (HBRUSH)GetStockObject(NULL_BRUSH);//»­Ë¢
+            RenderWindowM.hInstance = GetModuleHandle(NULL);//å®ä¾‹å¥æŸ„
+            RenderWindowM.hIcon = LoadIcon(NULL, IDI_SHIELD);//å›¾æ ‡
+            RenderWindowM.hCursor = LoadCursor(NULL, IDC_ARROW);//å…‰æ ‡æ ·å¼
+            RenderWindowM.hbrBackground = (HBRUSH)GetStockObject(NULL_BRUSH);//ç”»åˆ·
             RenderWindowM.lpszMenuName = NULL;
-            RenderWindowM.lpszClassName = m_WindowTitle;//´°¿ÚÀàµÄÃû³Æ£¬²Ù×÷ÏµÍ³¸ù¾İÀàµÄÃû³Æ×öÓ³Éä
-            RegisterClass(&RenderWindowM);//½«Õâ¸ö´°Ìå×¢²á£¨¸æËß£©µ½²Ù×÷ÏµÍ³
-            HWND hWnd = CreateWindowEx(´°¿ÚÀàĞÍ, m_WindowTitle, m_WindowTitle, WS_POPUP, GetSystemMetrics(SM_CXSCREEN) / 2 - SizeX / 2, GetSystemMetrics(SM_CYSCREEN) / 2 - SizeY / 2, SizeX, SizeY, 0, 0, GetModuleHandle(NULL), 0);
-            if (hWnd)//µ±´´½¨³É¹¦
+            RenderWindowM.lpszClassName = m_WindowTitle;//çª—å£ç±»çš„åç§°ï¼Œæ“ä½œç³»ç»Ÿæ ¹æ®ç±»çš„åç§°åšæ˜ å°„
+            RegisterClass(&RenderWindowM);//å°†è¿™ä¸ªçª—ä½“æ³¨å†Œï¼ˆå‘Šè¯‰ï¼‰åˆ°æ“ä½œç³»ç»Ÿ
+            HWND hWnd = CreateWindowEx(çª—å£ç±»å‹, m_WindowTitle, m_WindowTitle, WS_POPUP, GetSystemMetrics(SM_CXSCREEN) / 2 - SizeX / 2, GetSystemMetrics(SM_CYSCREEN) / 2 - SizeY / 2, SizeX, SizeY, 0, 0, GetModuleHandle(NULL), 0);
+            if (hWnd)//å½“åˆ›å»ºæˆåŠŸ
             {
                 UpdateWindow(hWnd);
                 ShowWindow(hWnd, SW_SHOW);
                 SetLayeredWindowAttributes(hWnd, RGB(0, 0, 0), 255, LWA_ALPHA);
                 EasyGUI_WindowHWND = hWnd;
                 EasyGUI_WindowHDC = GetWindowDC(hWnd);
-                //---------------------------------------Ë«»º³å¿ªÊ¼»æÖÆ
+                //---------------------------------------åŒç¼“å†²å¼€å§‹ç»˜åˆ¶
                 PaintSize = { SizeX + 100,SizeY + 100 };
                 EasyGUI_DrawHDC = CreateCompatibleDC(EasyGUI_WindowHDC);
                 SelectObject(EasyGUI_DrawHDC, (HBITMAP)CreateCompatibleBitmap(EasyGUI_WindowHDC, PaintSize[0], PaintSize[1]));
@@ -315,71 +363,71 @@ namespace EasyGUI
             }
             else return false;
         }
-        void Draw_GUI() noexcept//Ë«»º³å½áÊø»æÖÆ (»æÖÆ×îÖÕ·µ»ØÍ¼Æ¬)
+        void Draw_GUI() noexcept//åŒç¼“å†²ç»“æŸç»˜åˆ¶ (ç»˜åˆ¶æœ€ç»ˆè¿”å›å›¾ç‰‡)
         {
             BitBlt(EasyGUI_WindowHDC, 0, 0, PaintSize[0], PaintSize[1], EasyGUI_DrawHDC, 0, 0, SRCCOPY);
         }
         //---------------------------------------------------------------------------------------------------------------------------------------------------------
-        HWND Window_HWND() noexcept//»ñÈ¡GUI´°¿ÚHWND
+        HWND Window_HWND() noexcept//è·å–GUIçª—å£HWND
         {
             return EasyGUI_WindowHWND;
         }
-        HDC Window_HDC() noexcept//»ñÈ¡GUI´°¿ÚHDC
+        HDC Window_HDC() noexcept//è·å–GUIçª—å£HDC
         {
             return EasyGUI_DrawHDC;
         }
         //---------------------------------------------------------------------------------------------------------------------------------------------------------
-        void Window_SetPOS(vector<int> m_Pos) noexcept//ĞŞ¸ÄGUI´°¿Ú×ø±ê
+        void Window_SetPOS(vector<int> m_Pos) noexcept//ä¿®æ”¹GUIçª—å£åæ ‡
         {
             RECT Windowrect; GetWindowRect(EasyGUI_WindowHWND, &Windowrect);
             MoveWindow(EasyGUI_WindowHWND, m_Pos[0], m_Pos[1], Windowrect.right - Windowrect.left, Windowrect.bottom - Windowrect.top, TRUE);
         }
-        vector<int> Window_GetPOS() noexcept//»ñÈ¡GUI´°¿Ú×ø±ê
+        vector<int> Window_GetPOS() noexcept//è·å–GUIçª—å£åæ ‡
         {
             RECT Windowrect; GetWindowRect(EasyGUI_WindowHWND, &Windowrect);
             return { Windowrect.left ,Windowrect.top };
         }
         //---------------------------------------------------------------------------------------------------------------------------------------------------------
-        void Window_SetSize(vector<int> m_Size) noexcept//ĞŞ¸ÄGUI´°¿Ú´óĞ¡
+        void Window_SetSize(vector<int> m_Size) noexcept//ä¿®æ”¹GUIçª—å£å¤§å°
         {
             RECT Windowrect; GetWindowRect(EasyGUI_WindowHWND, &Windowrect);
             MoveWindow(EasyGUI_WindowHWND, Windowrect.left, Windowrect.top, m_Size[0], m_Size[1], TRUE);
         }
-        vector<int> Window_GetSize() noexcept//»ñÈ¡GUI´°¿Ú´óĞ¡
+        vector<int> Window_GetSize() noexcept//è·å–GUIçª—å£å¤§å°
         {
             RECT Windowrect; GetWindowRect(EasyGUI_WindowHWND, &Windowrect);
             return { Windowrect.right - Windowrect.left ,Windowrect.bottom - Windowrect.top };
         }
         //---------------------------------------------------------------------------------------------------------------------------------------------------------
-        void Window_Show() noexcept//ĞŞ¸ÄGUI´°¿ÚÎª×îÇ°¶Ë
+        void Window_Show() noexcept//ä¿®æ”¹GUIçª—å£ä¸ºæœ€å‰ç«¯
         {
             SetForegroundWindow(EasyGUI_WindowHWND);
             ShowWindow(EasyGUI_WindowHWND, true);
         }
-        void Window_Hide() noexcept//Òş²ØGUI´°¿Ú
+        void Window_Hide() noexcept//éšè—GUIçª—å£
         {
             ShowWindow(EasyGUI_WindowHWND, false);
         }
         //---------------------------------------------------------------------------------------------------------------------------------------------------------
-        void Window_SetAlpha(short m_Alpha) noexcept//ĞŞ¸ÄGUI´°¿ÚÕûÌå°¢¶û·¨Í¨µÀ
+        void Window_SetAlpha(short m_Alpha) noexcept//ä¿®æ”¹GUIçª—å£æ•´ä½“é˜¿å°”æ³•é€šé“
         {
             if (m_Alpha >= 255)m_Alpha = 255; else if (m_Alpha <= 0)m_Alpha = 0;
             SetLayeredWindowAttributes(EasyGUI_WindowHWND, RGB(0, 0, 0), m_Alpha, LWA_ALPHA);
         }
         //---------------------------------------------------------------------------------------------------------------------------------------------------------
-        void Window_SetTitle(LPCWSTR m_Title) noexcept//ĞŞ¸ÄGUI´°¿Ú±êÌâ
+        void Window_SetTitle(LPCWSTR m_Title) noexcept//ä¿®æ”¹GUIçª—å£æ ‡é¢˜
         {
-            SetWindowTextW(EasyGUI_WindowHWND, m_Title);//ĞŞ¸Ä´°¿Ú±êÌâ
+            SetWindowTextW(EasyGUI_WindowHWND, m_Title);//ä¿®æ”¹çª—å£æ ‡é¢˜
         }
-        const char* Window_GetTitle() noexcept//»ñÈ¡GUI´°¿Ú±êÌâ
+        const char* Window_GetTitle() noexcept//è·å–GUIçª—å£æ ‡é¢˜
         {
             CHAR pszMem[MAX_PATH] = { 0 }; GetWindowTextA(EasyGUI_WindowHWND, pszMem, GetWindowTextLength(EasyGUI_WindowHWND) + 1);
             return pszMem;
         }
         //---------------------------------------------------------------------------------------------------------------------------------------------------------
-        BOOL Window_Move() noexcept//ÒÆ¶¯GUI´°¿Ú£¨·ÅÔÚÑ­»·(²»ÓÃ·ÅµÈ´ıº¯ÊıºÍÏûÏ¢Ñ­»·º¯Êı) ·ÇÊÂ¼ş£©
+        BOOL Window_Move() noexcept//ç§»åŠ¨GUIçª—å£ï¼ˆæ”¾åœ¨å¾ªç¯(ä¸ç”¨æ”¾ç­‰å¾…å‡½æ•°å’Œæ¶ˆæ¯å¾ªç¯å‡½æ•°) éäº‹ä»¶ï¼‰
         {
-            //--------------------------------ÏûÏ¢Ñ­»·
+            //--------------------------------æ¶ˆæ¯å¾ªç¯
             MSG msg = { 0 };
             if (GetMessageW(&msg, 0, 0, 0))
             {
@@ -387,36 +435,36 @@ namespace EasyGUI
                 DispatchMessage(&msg);
             }
             //----------------------------------------
-            static BOOL ·ÀÖ¹ÍÑÀë = false;
-            static int OldX; static int OldY;//°´ÏÂÊ±×ø±ê
+            static BOOL é˜²æ­¢è„±ç¦» = false;
+            static int OldX; static int OldY;//æŒ‰ä¸‹æ—¶åæ ‡
             POINT MousePos; GetCursorPos(&MousePos);
             RECT Windowrect; GetWindowRect(EasyGUI_WindowHWND, &Windowrect);
-            static BOOL ±£´æÊó±ê×ø±ê = false;
-            if (GetForegroundWindow() == EasyGUI_WindowHWND)//¼ì²â´°¿ÚÊÇ·ñÔÚ×îÇ°¶Ë
+            static BOOL ä¿å­˜é¼ æ ‡åæ ‡ = false;
+            if (GetForegroundWindow() == EasyGUI_WindowHWND)//æ£€æµ‹çª—å£æ˜¯å¦åœ¨æœ€å‰ç«¯
             {
-                if (!Mouse_Block_ && GetAsyncKeyState(VK_LBUTTON) && !·ÀÖ¹ÍÑÀë)//µ±Êó±êÖ¸Õë²»ÔÚBlockÉÏÔò¿ÉÒÔÒÆ¶¯´°¿Ú
+                if (!Mouse_Block_ && GetAsyncKeyState(VK_LBUTTON) && !é˜²æ­¢è„±ç¦»)//å½“é¼ æ ‡æŒ‡é’ˆä¸åœ¨Blockä¸Šåˆ™å¯ä»¥ç§»åŠ¨çª—å£
                 {
-                    if (±£´æÊó±ê×ø±ê)
+                    if (ä¿å­˜é¼ æ ‡åæ ‡)
                     {
                         OldX = (MousePos.x - Windowrect.left);
                         OldY = (MousePos.y - Windowrect.top);
-                        ±£´æÊó±ê×ø±ê = false;
+                        ä¿å­˜é¼ æ ‡åæ ‡ = false;
                     }
-                    MoveWindow(EasyGUI_WindowHWND, MousePos.x - OldX, MousePos.y - OldY, Windowrect.right - Windowrect.left, Windowrect.bottom - Windowrect.top, TRUE);//ÒÆ¶¯´°¿Úµ½Êó±ê×ø±ê
-                    ·ÀÖ¹ÍÑÀë = true;
+                    MoveWindow(EasyGUI_WindowHWND, MousePos.x - OldX, MousePos.y - OldY, Windowrect.right - Windowrect.left, Windowrect.bottom - Windowrect.top, TRUE);//ç§»åŠ¨çª—å£åˆ°é¼ æ ‡åæ ‡
+                    é˜²æ­¢è„±ç¦» = true;
                 }
-                else if (·ÀÖ¹ÍÑÀë && GetAsyncKeyState(VK_LBUTTON))
+                else if (é˜²æ­¢è„±ç¦» && GetAsyncKeyState(VK_LBUTTON))
                 {
-                    MoveWindow(EasyGUI_WindowHWND, MousePos.x - OldX, MousePos.y - OldY, Windowrect.right - Windowrect.left, Windowrect.bottom - Windowrect.top, TRUE);//ÒÆ¶¯´°¿Úµ½Êó±ê×ø±ê
-                    this_thread::sleep_for(chrono::nanoseconds(50));//½µµÍCPUÕ¼ÓÃ ÄÉÃëµ¥Î»µÈ´ıº¯Êı
+                    MoveWindow(EasyGUI_WindowHWND, MousePos.x - OldX, MousePos.y - OldY, Windowrect.right - Windowrect.left, Windowrect.bottom - Windowrect.top, TRUE);//ç§»åŠ¨çª—å£åˆ°é¼ æ ‡åæ ‡
+                    this_thread::sleep_for(chrono::nanoseconds(50));//é™ä½CPUå ç”¨ çº³ç§’å•ä½ç­‰å¾…å‡½æ•°
                     Mouse_Block_ = true;
                     return true;
                 }
                 else {
-                    ·ÀÖ¹ÍÑÀë = false;
-                    ±£´æÊó±ê×ø±ê = true;
-                    if (!(GetAsyncKeyState(VK_LBUTTON) & 0x8000))Sleep(20);//×î´ó³Ì¶È¼õÉÙcpuÕ¼ÓÃºÍ¿¨¶Ù
-                    this_thread::sleep_for(chrono::nanoseconds(200));//½µµÍCPUÕ¼ÓÃ ÄÉÃëµ¥Î»µÈ´ıº¯Êı
+                    é˜²æ­¢è„±ç¦» = false;
+                    ä¿å­˜é¼ æ ‡åæ ‡ = true;
+                    if (!(GetAsyncKeyState(VK_LBUTTON) & 0x8000))Sleep(20);//æœ€å¤§ç¨‹åº¦å‡å°‘cpuå ç”¨å’Œå¡é¡¿
+                    this_thread::sleep_for(chrono::nanoseconds(200));//é™ä½CPUå ç”¨ çº³ç§’å•ä½ç­‰å¾…å‡½æ•°
                     Mouse_Block_ = false;
                     return false;
                 }
@@ -424,41 +472,41 @@ namespace EasyGUI
             else Sleep(30); return false;
         }
         //---------------------------------------------------------------------------------------------------------------------------------------------------------
-        void GUI_BackGround(short m_BackGroundStyleCode) noexcept//»æÖÆGUI´°¿Ú±³¾°
+        void GUI_BackGround(short m_BackGroundStyleCode) noexcept//ç»˜åˆ¶GUIçª—å£èƒŒæ™¯
         {
             RECT Windowrect; GetWindowRect(EasyGUI_WindowHWND, &Windowrect);
             CHAR pszMem[MAX_PATH] = { 0 }; GetWindowTextA(EasyGUI_WindowHWND, pszMem, GetWindowTextLength(EasyGUI_WindowHWND) + 1);
             short XX = Windowrect.right - Windowrect.left; short YY = Windowrect.bottom - Windowrect.top;
-            vector<int> ²ÊºçÌõÑÕÉ« = { 0,255,255,255,0,255,255,255,0 };
-            vector<int> Ö÷ÌâÑÕÉ« = { 0,0,0,60,60,60,30,30,30,15,15,15,5,5,5,30,30,30 };
-            if (m_BackGroundStyleCode == 0)//¾­µäºÚÉ«Ö÷Ìâ
+            vector<int> å½©è™¹æ¡é¢œè‰² = { 0,255,255,255,0,255,255,255,0 };
+            vector<int> ä¸»é¢˜é¢œè‰² = { 0,0,0,60,60,60,30,30,30,15,15,15,5,5,5,30,30,30 };
+            if (m_BackGroundStyleCode == 0)//ç»å…¸é»‘è‰²ä¸»é¢˜
             {
-                ²ÊºçÌõÑÕÉ« = { 0,255,255,255,0,255,255,255,0 };
-                Ö÷ÌâÑÕÉ« = { 0,0,0,60,60,60,30,30,30,15,15,15,5,5,5,30,30,30 };
+                å½©è™¹æ¡é¢œè‰² = { 0,255,255,255,0,255,255,255,0 };
+                ä¸»é¢˜é¢œè‰² = { 0,0,0,60,60,60,30,30,30,15,15,15,5,5,5,30,30,30 };
             }
-            else if (m_BackGroundStyleCode == 1)//°×É«
+            else if (m_BackGroundStyleCode == 1)//ç™½è‰²
             {
-                ²ÊºçÌõÑÕÉ« = { 255,255,255,255,255,255,255,255,255 };
-                Ö÷ÌâÑÕÉ« = { 0,0,0,60,60,60,30,30,30,15,15,15,3,3,3,50,50,50 };
+                å½©è™¹æ¡é¢œè‰² = { 255,255,255,255,255,255,255,255,255 };
+                ä¸»é¢˜é¢œè‰² = { 0,0,0,60,60,60,30,30,30,15,15,15,3,3,3,50,50,50 };
             }
-            else if (m_BackGroundStyleCode == 2)//ºÚ°×É«
+            else if (m_BackGroundStyleCode == 2)//é»‘ç™½è‰²
             {
-                ²ÊºçÌõÑÕÉ« = { 150,150,150,255,255,255,150,150,150 };
-                Ö÷ÌâÑÕÉ« = { 0,0,0,60,60,60,30,30,30,15,15,15,3,3,3,30,30,30 };
+                å½©è™¹æ¡é¢œè‰² = { 150,150,150,255,255,255,150,150,150 };
+                ä¸»é¢˜é¢œè‰² = { 0,0,0,60,60,60,30,30,30,15,15,15,3,3,3,30,30,30 };
             }
-            else if (m_BackGroundStyleCode == 1337)//·ÂGamesense
+            else if (m_BackGroundStyleCode == 1337)//ä»¿Gamesense
             {
-                ²ÊºçÌõÑÕÉ« = { 100,255,255,255,100,255,255,255,100 };
-                Ö÷ÌâÑÕÉ« = { 0,0,0,60,60,60,30,30,30,15,15,15,5,5,5,30,30,30 };
+                å½©è™¹æ¡é¢œè‰² = { 100,255,255,255,100,255,255,255,100 };
+                ä¸»é¢˜é¢œè‰² = { 0,0,0,60,60,60,30,30,30,15,15,15,5,5,5,30,30,30 };
             }
-            else if (m_BackGroundStyleCode == 1367)//·ÂGamesense2
+            else if (m_BackGroundStyleCode == 1367)//ä»¿Gamesense2
             {
-                ²ÊºçÌõÑÕÉ« = { 0,255,255,255,0,255,255,255,0 };
-                Ö÷ÌâÑÕÉ« = { 0,0,0,60,60,60,30,30,30,15,15,15,3,3,3,30,30,30 };
+                å½©è™¹æ¡é¢œè‰² = { 0,255,255,255,0,255,255,255,0 };
+                ä¸»é¢˜é¢œè‰² = { 0,0,0,60,60,60,30,30,30,15,15,15,3,3,3,30,30,30 };
             }
-            else if (m_BackGroundStyleCode == 1368)//²ÊÉ«±äÉ«½¥±äÌõ*****************
+            else if (m_BackGroundStyleCode == 1368)//å½©è‰²å˜è‰²æ¸å˜æ¡*****************
             {
-                ²ÊºçÌõÑÕÉ« = {
+                å½©è™¹æ¡é¢œè‰² = {
                     (int)floor(sin((float)GetTickCount64() / 1700 * 2 + 3) * 127 + 128),
                     (int)floor(sin((float)GetTickCount64() / 1700 * 2 + 2 + 3) * 127 + 128),
                     (int)floor(sin((float)GetTickCount64() / 1700 * 2 + 4 + 3) * 127 + 128),
@@ -469,11 +517,11 @@ namespace EasyGUI
                     (int)floor(sin((float)GetTickCount64() / 1700 * 2 + 2 + 1) * 127 + 128),
                     (int)floor(sin((float)GetTickCount64() / 1700 * 2 + 4 + 1) * 127 + 128),
                 };
-                Ö÷ÌâÑÕÉ« = { 0,0,0,60,60,60,30,30,30,15,15,15,3,3,3, Global_EasyGUIColor[0] / 7,Global_EasyGUIColor[1] / 7 ,Global_EasyGUIColor[2] / 7 };
+                ä¸»é¢˜é¢œè‰² = { 0,0,0,60,60,60,30,30,30,15,15,15,3,3,3, Global_EasyGUIColor[0] / 7,Global_EasyGUIColor[1] / 7 ,Global_EasyGUIColor[2] / 7 };
             }
-            else if (m_BackGroundStyleCode == 1369)//ºÚ°×±äÉ«½¥±äÌõ*****************
+            else if (m_BackGroundStyleCode == 1369)//é»‘ç™½å˜è‰²æ¸å˜æ¡*****************
             {
-                ²ÊºçÌõÑÕÉ« = {
+                å½©è™¹æ¡é¢œè‰² = {
                    55 + (int)floor(sin((float)GetTickCount64() / 500 + 3) * 100 + 100),
                    55 + (int)floor(sin((float)GetTickCount64() / 500 + 3) * 100 + 100),
                    55 + (int)floor(sin((float)GetTickCount64() / 500 + 3) * 100 + 100),
@@ -484,48 +532,48 @@ namespace EasyGUI
                    55 + (int)floor(sin((float)GetTickCount64() / 500 + 1) * 100 + 100),
                    55 + (int)floor(sin((float)GetTickCount64() / 500 + 1) * 100 + 100),
                 };
-                Ö÷ÌâÑÕÉ« = { 0,0,0,60,60,60,30,30,30,15,15,15,15,15,15,5,5,5 };
+                ä¸»é¢˜é¢œè‰² = { 0,0,0,60,60,60,30,30,30,15,15,15,15,15,15,5,5,5 };
             }
-            else if (m_BackGroundStyleCode == -1)//·ÛÀ¶É«
+            else if (m_BackGroundStyleCode == -1)//ç²‰è“è‰²
             {
-                ²ÊºçÌõÑÕÉ« = { 255,150,255,200,170,255,150,200,255 };
-                Ö÷ÌâÑÕÉ« = { 0,0,0,60,60,60,30,30,30,15,15,15,3,3,3,30,25,35 };
+                å½©è™¹æ¡é¢œè‰² = { 255,150,255,200,170,255,150,200,255 };
+                ä¸»é¢˜é¢œè‰² = { 0,0,0,60,60,60,30,30,30,15,15,15,3,3,3,30,25,35 };
             }
-            else if (m_BackGroundStyleCode == -2)//³È»ÆÉ«
+            else if (m_BackGroundStyleCode == -2)//æ©™é»„è‰²
             {
-                ²ÊºçÌõÑÕÉ« = { 230,80,80,230,120,60,255,200,30 };
-                Ö÷ÌâÑÕÉ« = { 0,0,0,60,60,60,30,30,30,15,15,15,3,3,3,40,25,25 };
+                å½©è™¹æ¡é¢œè‰² = { 230,80,80,230,120,60,255,200,30 };
+                ä¸»é¢˜é¢œè‰² = { 0,0,0,60,60,60,30,30,30,15,15,15,3,3,3,40,25,25 };
             }
-            else if (m_BackGroundStyleCode == -3)//ÇàÂÌÉ«
+            else if (m_BackGroundStyleCode == -3)//é’ç»¿è‰²
             {
-                ²ÊºçÌõÑÕÉ« = { 100,200,100,100,200,150,100,180,230 };
-                Ö÷ÌâÑÕÉ« = { 0,0,0,60,60,60,30,30,30,15,15,15,3,3,3,0,30,30 };
+                å½©è™¹æ¡é¢œè‰² = { 100,200,100,100,200,150,100,180,230 };
+                ä¸»é¢˜é¢œè‰² = { 0,0,0,60,60,60,30,30,30,15,15,15,3,3,3,0,30,30 };
             }
-            else if (m_BackGroundStyleCode == 999)//Ã«¶¼Ã»ÓĞ
+            else if (m_BackGroundStyleCode == 999)//æ¯›éƒ½æ²¡æœ‰
             {
-                ²ÊºçÌõÑÕÉ« = { 16,16,16,16,16,16,16,16,16 };
-                Ö÷ÌâÑÕÉ« = { 0,0,0,60,60,60,30,30,30,15,15,15,15,15,15,15,15,15 };
+                å½©è™¹æ¡é¢œè‰² = { 16,16,16,16,16,16,16,16,16 };
+                ä¸»é¢˜é¢œè‰² = { 0,0,0,60,60,60,30,30,30,15,15,15,15,15,15,15,15,15 };
             }
-            DrawRect(0, 0, XX, YY, { Ö÷ÌâÑÕÉ«[0], Ö÷ÌâÑÕÉ«[1], Ö÷ÌâÑÕÉ«[2] });
-            DrawRect(1, 1, XX - 2, YY - 2, { Ö÷ÌâÑÕÉ«[3], Ö÷ÌâÑÕÉ«[4], Ö÷ÌâÑÕÉ«[5] });
-            DrawRect(2, 2, XX - 4, YY - 4, { Ö÷ÌâÑÕÉ«[6], Ö÷ÌâÑÕÉ«[7], Ö÷ÌâÑÕÉ«[8] });
-            DrawRect(5, 5, XX - 10, YY - 10, { Ö÷ÌâÑÕÉ«[3], Ö÷ÌâÑÕÉ«[4], Ö÷ÌâÑÕÉ«[5] });
-            DrawGradientRect(6, 6, XX - 12, YY - 12, { Ö÷ÌâÑÕÉ«[12], Ö÷ÌâÑÕÉ«[13], Ö÷ÌâÑÕÉ«[14] }, { Ö÷ÌâÑÕÉ«[15], Ö÷ÌâÑÕÉ«[16], Ö÷ÌâÑÕÉ«[17] }, true);//BackGround Gradient
-            //-----------²ÊºçÌõ
-            if (m_BackGroundStyleCode != 999)//Ã«¶¼Ã»ÓĞ
+            DrawRect(0, 0, XX, YY, { ä¸»é¢˜é¢œè‰²[0], ä¸»é¢˜é¢œè‰²[1], ä¸»é¢˜é¢œè‰²[2] });
+            DrawRect(1, 1, XX - 2, YY - 2, { ä¸»é¢˜é¢œè‰²[3], ä¸»é¢˜é¢œè‰²[4], ä¸»é¢˜é¢œè‰²[5] });
+            DrawRect(2, 2, XX - 4, YY - 4, { ä¸»é¢˜é¢œè‰²[6], ä¸»é¢˜é¢œè‰²[7], ä¸»é¢˜é¢œè‰²[8] });
+            DrawRect(5, 5, XX - 10, YY - 10, { ä¸»é¢˜é¢œè‰²[3], ä¸»é¢˜é¢œè‰²[4], ä¸»é¢˜é¢œè‰²[5] });
+            DrawGradientRect(6, 6, XX - 12, YY - 12, { ä¸»é¢˜é¢œè‰²[12], ä¸»é¢˜é¢œè‰²[13], ä¸»é¢˜é¢œè‰²[14] }, { ä¸»é¢˜é¢œè‰²[15], ä¸»é¢˜é¢œè‰²[16], ä¸»é¢˜é¢œè‰²[17] }, true);//BackGround Gradient
+            //-----------å½©è™¹æ¡
+            if (m_BackGroundStyleCode != 999)//æ¯›éƒ½æ²¡æœ‰
             {
-                DrawGradientRect(7, 7, (XX - 7 * 2) / 2, 2, { ²ÊºçÌõÑÕÉ«[0] / 2, ²ÊºçÌõÑÕÉ«[1] / 2, ²ÊºçÌõÑÕÉ«[2] / 2 }, { ²ÊºçÌõÑÕÉ«[3] / 2, ²ÊºçÌõÑÕÉ«[4] / 2, ²ÊºçÌõÑÕÉ«[5] / 2 }, false);
-                DrawGradientRect(7 + (XX - 7 * 2) / 2, 7, (XX - 7 * 2) / 2, 2, { ²ÊºçÌõÑÕÉ«[3] / 2, ²ÊºçÌõÑÕÉ«[4] / 2, ²ÊºçÌõÑÕÉ«[5] / 2 }, { ²ÊºçÌõÑÕÉ«[6] / 2, ²ÊºçÌõÑÕÉ«[7] / 2, ²ÊºçÌõÑÕÉ«[8] / 2 }, false);
-                DrawGradientRect(7, 7, (XX - 7 * 2) / 2, 1, { ²ÊºçÌõÑÕÉ«[0], ²ÊºçÌõÑÕÉ«[1], ²ÊºçÌõÑÕÉ«[2] }, { ²ÊºçÌõÑÕÉ«[3], ²ÊºçÌõÑÕÉ«[4], ²ÊºçÌõÑÕÉ«[5] }, false);
-                DrawGradientRect(7 + (XX - 7 * 2) / 2, 7, (XX - 7 * 2) / 2, 1, { ²ÊºçÌõÑÕÉ«[3], ²ÊºçÌõÑÕÉ«[4], ²ÊºçÌõÑÕÉ«[5] }, { ²ÊºçÌõÑÕÉ«[6], ²ÊºçÌõÑÕÉ«[7], ²ÊºçÌõÑÕÉ«[8] }, false);
+                DrawGradientRect(7, 7, (XX - 7 * 2) / 2, 2, { å½©è™¹æ¡é¢œè‰²[0] / 2, å½©è™¹æ¡é¢œè‰²[1] / 2, å½©è™¹æ¡é¢œè‰²[2] / 2 }, { å½©è™¹æ¡é¢œè‰²[3] / 2, å½©è™¹æ¡é¢œè‰²[4] / 2, å½©è™¹æ¡é¢œè‰²[5] / 2 }, false);
+                DrawGradientRect(7 + (XX - 7 * 2) / 2, 7, (XX - 7 * 2) / 2, 2, { å½©è™¹æ¡é¢œè‰²[3] / 2, å½©è™¹æ¡é¢œè‰²[4] / 2, å½©è™¹æ¡é¢œè‰²[5] / 2 }, { å½©è™¹æ¡é¢œè‰²[6] / 2, å½©è™¹æ¡é¢œè‰²[7] / 2, å½©è™¹æ¡é¢œè‰²[8] / 2 }, false);
+                DrawGradientRect(7, 7, (XX - 7 * 2) / 2, 1, { å½©è™¹æ¡é¢œè‰²[0], å½©è™¹æ¡é¢œè‰²[1], å½©è™¹æ¡é¢œè‰²[2] }, { å½©è™¹æ¡é¢œè‰²[3], å½©è™¹æ¡é¢œè‰²[4], å½©è™¹æ¡é¢œè‰²[5] }, false);
+                DrawGradientRect(7 + (XX - 7 * 2) / 2, 7, (XX - 7 * 2) / 2, 1, { å½©è™¹æ¡é¢œè‰²[3], å½©è™¹æ¡é¢œè‰²[4], å½©è™¹æ¡é¢œè‰²[5] }, { å½©è™¹æ¡é¢œè‰²[6], å½©è™¹æ¡é¢œè‰²[7], å½©è™¹æ¡é¢œè‰²[8] }, false);
             }
             //-----------
-            if (m_BackGroundStyleCode != 1337 && m_BackGroundStyleCode != 1367 && m_BackGroundStyleCode != 1368 && m_BackGroundStyleCode != 1369)//ÅÅ³ıÌØ¶¨±³¾°±êÌâ
+            if (m_BackGroundStyleCode != 1337 && m_BackGroundStyleCode != 1367 && m_BackGroundStyleCode != 1368 && m_BackGroundStyleCode != 1369)//æ’é™¤ç‰¹å®šèƒŒæ™¯æ ‡é¢˜
             {
-                DrawString(8 + 1, YY - Global_EasyGUIFontSize - 5, pszMem, { 0,0,0 }, Global_EasyGUIFontSize, Global_EasyGUIFont, 400);
-                DrawString(8, YY - Global_EasyGUIFontSize - 5, pszMem, { Global_EasyGUIColor[0] / 2,Global_EasyGUIColor[1] / 2 ,Global_EasyGUIColor[2] / 2 }, Global_EasyGUIFontSize, Global_EasyGUIFont, 400);
+                DrawString(8 + 1, YY - Global_EasyGUIFontSize - 5, pszMem, { 0,0,0 }, Global_EasyGUIFont, Global_EasyGUIFontSize, 400);
+                DrawString(8, YY - Global_EasyGUIFontSize - 5, pszMem, { Global_EasyGUIColor[0] / 2,Global_EasyGUIColor[1] / 2 ,Global_EasyGUIColor[2] / 2 }, Global_EasyGUIFont, Global_EasyGUIFontSize, 400);
             }
-            if (m_BackGroundStyleCode == 1369)//1369Ö÷Ìâ¶ÀÓĞµÄĞÇĞÇ
+            if (m_BackGroundStyleCode == 1369)//1369ä¸»é¢˜ç‹¬æœ‰çš„æ˜Ÿæ˜Ÿ
             {
                 for (short SI = 0; SI < 100; ++SI)
                 {
@@ -534,19 +582,19 @@ namespace EasyGUI
                     DrawRect(rand() % (XX - 14) + 7, rand() % (YY - 17) + 10, 1, 1, { StarColor,StarColor,StarColor });
                 }
             }
-            Global_EasyGUIStyleCode = m_BackGroundStyleCode;//Ì×Ğ´²Ëµ¥·ç¸ñ´úÂë±äÁ¿(ÓÃÓÚºÍÆäËûº¯Êı¹²Ïí)
+            Global_EasyGUIStyleCode = m_BackGroundStyleCode;//å¥—å†™èœå•é£æ ¼ä»£ç å˜é‡(ç”¨äºå’Œå…¶ä»–å‡½æ•°å…±äº«)
         }
         //---------------------------------------------------------------------------------------------------------------------------------------------------------
-        vector<int> GUI_Block(int X, int Y, int YY, string m_BlockText) noexcept//»æÖÆÓÃÒÔ»æÖÆ°´Å¥µÄÇø¿é
+        vector<int> GUI_Block(int X, int Y, int YY, string m_BlockText) noexcept//ç»˜åˆ¶ç”¨ä»¥ç»˜åˆ¶æŒ‰é’®çš„åŒºå—
         {
-            POINT m_MousePos; GetCursorPos(&m_MousePos);//»ñÈ¡Êó±ê×ø±ê
-            RECT m_WindowPos; GetWindowRect(EasyGUI_WindowHWND, &m_WindowPos);//»ñÈ¡´°¿Ú×ø±ê
-            DrawRect(X, Y, 400, YY, { 0,0,0 });//ºÚÉ«Íâ±ß¿ò
-            DrawRect(X + 1, Y + 1, 400 - 2, YY - 2, { 60,60,60 });//°×É«Íâ±ß¿ò
-            if (Global_EasyGUIStyleCode == 1368)DrawGradientRect(X + 2, Y + 2, 400 - 4, YY - 4, { 10,10,10 }, { Global_EasyGUIColor[0] / 10,Global_EasyGUIColor[1] / 10 ,Global_EasyGUIColor[2] / 10 }, true);//²Ëµ¥´úÂë½¥±ä±³¾°
-            else DrawRect(X + 2, Y + 2, 400 - 4, YY - 4, { 15,15,15 });//Ä¬ÈÏ±³¾°
-            DrawString(X + 20 + 1, Y - 7 + 1, m_BlockText.c_str(), { 50,50,50 }, 14, L"Small Fonts", 700);
-            DrawString(X + 20 + 1, Y - 7, m_BlockText.c_str(), { 200,200,200 }, 14, L"Small Fonts", 700);
+            POINT m_MousePos; GetCursorPos(&m_MousePos);//è·å–é¼ æ ‡åæ ‡
+            RECT m_WindowPos; GetWindowRect(EasyGUI_WindowHWND, &m_WindowPos);//è·å–çª—å£åæ ‡
+            DrawRect(X, Y, 400, YY, { 0,0,0 });//é»‘è‰²å¤–è¾¹æ¡†
+            DrawRect(X + 1, Y + 1, 400 - 2, YY - 2, { 60,60,60 });//ç™½è‰²å¤–è¾¹æ¡†
+            if (Global_EasyGUIStyleCode == 1368)DrawGradientRect(X + 2, Y + 2, 400 - 4, YY - 4, { 10,10,10 }, { Global_EasyGUIColor[0] / 10,Global_EasyGUIColor[1] / 10 ,Global_EasyGUIColor[2] / 10 }, true);//èœå•ä»£ç æ¸å˜èƒŒæ™¯
+            else DrawRect(X + 2, Y + 2, 400 - 4, YY - 4, { 15,15,15 });//é»˜è®¤èƒŒæ™¯
+            DrawString(X + 20 + 1, Y - 7 + 1, m_BlockText.c_str(), { 50,50,50 }, L"Small Fonts", 14, 700);
+            DrawString(X + 20 + 1, Y - 7, m_BlockText.c_str(), { 200,200,200 }, L"Small Fonts", 14, 700);
             if ((m_MousePos.x - m_WindowPos.left >= X && m_MousePos.x - m_WindowPos.left <= X + 400 && m_MousePos.y - m_WindowPos.top >= Y && m_MousePos.y - m_WindowPos.top <= Y + YY) || !(m_MousePos.x >= m_WindowPos.left && m_MousePos.x <= m_WindowPos.right && m_MousePos.y >= m_WindowPos.top && m_MousePos.y <= m_WindowPos.bottom))
             {
                 Mouse_Block_ = true;
@@ -554,20 +602,20 @@ namespace EasyGUI
             return { X,Y };
         }
         //---------------------------------------------------------------------------------------------------------------------------------------------------------
-        void GUI_Text(vector<int>BlockPos, short LineRow, string Text, ...) noexcept//»æÖÆĞĞÎÄ×Ö
+        void GUI_Text(vector<int>BlockPos, short LineRow, string Text, ...) noexcept//ç»˜åˆ¶è¡Œæ–‡å­—
         {
-            if (BlockPos[0] == 0 && BlockPos[1] == 0)return;//µ±ÎŞblockÔò²»½øĞĞ»æÖÆ
-            DrawString(BlockPos[0] + 22 + 30 + 1, BlockPos[1] - 3 + (30 * LineRow) + 1, Text, { 0,0,0 }, Global_EasyGUIFontSize, Global_EasyGUIFont, 400);
-            DrawString(BlockPos[0] + 22 + 30 + 1, BlockPos[1] - 3 + (30 * LineRow), Text, { 200,200,200 }, Global_EasyGUIFontSize, Global_EasyGUIFont, 400);
+            if (BlockPos[0] == 0 && BlockPos[1] == 0)return;//å½“æ— blockåˆ™ä¸è¿›è¡Œç»˜åˆ¶
+            DrawString(BlockPos[0] + 22 + 30 + 1, BlockPos[1] - 3 + (30 * LineRow) + 1, Text, { 0,0,0 }, Global_EasyGUIFont, Global_EasyGUIFontSize, 400);
+            DrawString(BlockPos[0] + 22 + 30 + 1, BlockPos[1] - 3 + (30 * LineRow), Text, { 200,200,200 }, Global_EasyGUIFont, Global_EasyGUIFontSize, 400);
         }
         //--------------------------------------------------------------------------------------------------------------------------------------------------------
-        BOOL GUI_Checkbox(vector<int>BlockPos, short LineRow, string Text, BOOL& m_CheckboxValue) noexcept//»æÖÆµã»÷¿ò
+        BOOL GUI_Checkbox(vector<int>BlockPos, short LineRow, string Text, BOOL& m_CheckboxValue) noexcept//ç»˜åˆ¶ç‚¹å‡»æ¡†
         {
-            if (BlockPos[0] == 0 && BlockPos[1] == 0)return 0;//µ±ÎŞblockÔò²»½øĞĞ»æÖÆ
-            POINT m_MousePos; GetCursorPos(&m_MousePos);//»ñÈ¡Êó±ê×ø±ê
-            RECT m_WindowPos; GetWindowRect(EasyGUI_WindowHWND, &m_WindowPos);//»ñÈ¡´°¿Ú×ø±ê
-            BOOL DetectMousePos = m_MousePos.x - m_WindowPos.left >= BlockPos[0] + 30 && m_MousePos.x - m_WindowPos.left <= BlockPos[0] + 250 + 30 && m_MousePos.y - m_WindowPos.top >= BlockPos[1] + (30 * LineRow) - 2 && m_MousePos.y - m_WindowPos.top <= BlockPos[1] + 8 + (30 * LineRow) + 2;//´°¿Ú¼ì²â»úÖÆ
-            if (GetForegroundWindow() == EasyGUI_WindowHWND && !Mouse_Slider_)//µ±×îÇ°¶Ë´°¿ÚÎªGUI´°¿Ú½ÓÊÕ°´Å¥ÊÂ¼ş
+            if (BlockPos[0] == 0 && BlockPos[1] == 0)return 0;//å½“æ— blockåˆ™ä¸è¿›è¡Œç»˜åˆ¶
+            POINT m_MousePos; GetCursorPos(&m_MousePos);//è·å–é¼ æ ‡åæ ‡
+            RECT m_WindowPos; GetWindowRect(EasyGUI_WindowHWND, &m_WindowPos);//è·å–çª—å£åæ ‡
+            BOOL DetectMousePos = m_MousePos.x - m_WindowPos.left >= BlockPos[0] + 30 && m_MousePos.x - m_WindowPos.left <= BlockPos[0] + 250 + 30 && m_MousePos.y - m_WindowPos.top >= BlockPos[1] + (30 * LineRow) - 2 && m_MousePos.y - m_WindowPos.top <= BlockPos[1] + 8 + (30 * LineRow) + 2;//çª—å£æ£€æµ‹æœºåˆ¶
+            if (GetForegroundWindow() == EasyGUI_WindowHWND && !Mouse_Slider_)//å½“æœ€å‰ç«¯çª—å£ä¸ºGUIçª—å£æ¥æ”¶æŒ‰é’®äº‹ä»¶
             {
                 if (!m_CheckboxValue && GetAsyncKeyState(VK_LBUTTON) & 0x8000 && DetectMousePos)
                 {
@@ -581,27 +629,27 @@ namespace EasyGUI
                 }
             }
             DrawRect(BlockPos[0] - 1 + 30, BlockPos[1] - 1 + (30 * LineRow), 10, 10, { 0,0,0 });
-            DrawString(BlockPos[0] + 22 + 30 + 1, BlockPos[1] - 3 + (30 * LineRow) + 1, Text, { 0,0,0 }, Global_EasyGUIFontSize, Global_EasyGUIFont, 400);
-            DrawString(BlockPos[0] + 22 + 30, BlockPos[1] - 3 + (30 * LineRow), Text, { 200,200,200 }, Global_EasyGUIFontSize, Global_EasyGUIFont, 400);
-            if (m_CheckboxValue)//»æÖÆ
+            DrawString(BlockPos[0] + 22 + 30 + 1, BlockPos[1] - 3 + (30 * LineRow) + 1, Text, { 0,0,0 }, Global_EasyGUIFont, Global_EasyGUIFontSize, 400);
+            DrawString(BlockPos[0] + 22 + 30, BlockPos[1] - 3 + (30 * LineRow), Text, { 200,200,200 }, Global_EasyGUIFont, Global_EasyGUIFontSize, 400);
+            if (m_CheckboxValue)//ç»˜åˆ¶
             {
                 DrawGradientRect(BlockPos[0] - 1 + 30 + 1, BlockPos[1] - 1 + (30 * LineRow) + 1, 8, 8, Global_EasyGUIColor, { Global_EasyGUIColor[0] / 5,Global_EasyGUIColor[1] / 5,Global_EasyGUIColor[2] / 5 }, true);
                 return true;
             }
             else {
-                if (DetectMousePos)DrawGradientRect(BlockPos[0] - 1 + 30 + 1, BlockPos[1] - 1 + (30 * LineRow) + 1, 8, 8, { 110,110,110 }, { 30,30,30 }, true);//ÒÆ¶¯µ½°´Å¥°´Å¥±äÁÁ
+                if (DetectMousePos)DrawGradientRect(BlockPos[0] - 1 + 30 + 1, BlockPos[1] - 1 + (30 * LineRow) + 1, 8, 8, { 110,110,110 }, { 30,30,30 }, true);//ç§»åŠ¨åˆ°æŒ‰é’®æŒ‰é’®å˜äº®
                 else DrawGradientRect(BlockPos[0] - 1 + 30 + 1, BlockPos[1] - 1 + (30 * LineRow) + 1, 8, 8, { 80,80,80 }, { 30,30,30 }, true);
                 return false;
             }
         }
         //---------------------------------------------------------------------------------------------------------------------------------------------------------
-        BOOL GUI_Button(vector<int>BlockPos, short LineRow, string Text, short TextPos, BOOL& m_ButtonValue) noexcept//»æÖÆµ¥»÷°´Å¥
+        BOOL GUI_Button(vector<int>BlockPos, short LineRow, string Text, short TextPos, BOOL& m_ButtonValue) noexcept//ç»˜åˆ¶å•å‡»æŒ‰é’®
         {
-            if (BlockPos[0] == 0 && BlockPos[1] == 0)return 0;//µ±ÎŞblockÔò²»½øĞĞ»æÖÆ
-            POINT m_MousePos; GetCursorPos(&m_MousePos);//»ñÈ¡Êó±ê×ø±ê
-            RECT m_WindowPos; GetWindowRect(EasyGUI_WindowHWND, &m_WindowPos);//»ñÈ¡´°¿Ú×ø±ê
-            BOOL DetectMousePos = m_MousePos.x - m_WindowPos.left >= BlockPos[0] + 55 && m_MousePos.x - m_WindowPos.left <= BlockPos[0] + 230 + 55 && m_MousePos.y - m_WindowPos.top >= BlockPos[1] + (30 * LineRow) - 8 && m_MousePos.y - m_WindowPos.top <= BlockPos[1] + 25 + (30 * LineRow) - 8;//´°¿Ú¼ì²â»úÖÆ
-            if (GetForegroundWindow() == EasyGUI_WindowHWND && !Mouse_Slider_)//µ±×îÇ°¶Ë´°¿ÚÎªGUI´°¿Ú½ÓÊÕ°´Å¥ÊÂ¼ş
+            if (BlockPos[0] == 0 && BlockPos[1] == 0)return 0;//å½“æ— blockåˆ™ä¸è¿›è¡Œç»˜åˆ¶
+            POINT m_MousePos; GetCursorPos(&m_MousePos);//è·å–é¼ æ ‡åæ ‡
+            RECT m_WindowPos; GetWindowRect(EasyGUI_WindowHWND, &m_WindowPos);//è·å–çª—å£åæ ‡
+            BOOL DetectMousePos = m_MousePos.x - m_WindowPos.left >= BlockPos[0] + 55 && m_MousePos.x - m_WindowPos.left <= BlockPos[0] + 230 + 55 && m_MousePos.y - m_WindowPos.top >= BlockPos[1] + (30 * LineRow) - 8 && m_MousePos.y - m_WindowPos.top <= BlockPos[1] + 25 + (30 * LineRow) - 8;//çª—å£æ£€æµ‹æœºåˆ¶
+            if (GetForegroundWindow() == EasyGUI_WindowHWND && !Mouse_Slider_)//å½“æœ€å‰ç«¯çª—å£ä¸ºGUIçª—å£æ¥æ”¶æŒ‰é’®äº‹ä»¶
             {
                 if (!m_ButtonValue && GetAsyncKeyState(VK_LBUTTON) & 0x8000 && DetectMousePos)
                 {
@@ -614,30 +662,30 @@ namespace EasyGUI
             DrawRect(BlockPos[0] - 1 + 55, BlockPos[1] - 1 + (30 * LineRow) - 8, 232, 27, { 60,60,60 });
             if (DetectMousePos)DrawGradientRect(BlockPos[0] + 55, BlockPos[1] + (30 * LineRow) - 8, 230, 25, { 40,40,40 }, { 20,20,20 }, true);
             else DrawGradientRect(BlockPos[0] + 55, BlockPos[1] + (30 * LineRow) - 8, 230, 25, { 30,30,30 }, { 20,20,20 }, true);
-            DrawString(BlockPos[0] + TextPos + 55 + 1, BlockPos[1] + 6 + (30 * LineRow) - 8 + 1, Text, { 0,0,0 }, Global_EasyGUIFontSize, Global_EasyGUIFont, 400);
-            DrawString(BlockPos[0] + TextPos + 55, BlockPos[1] + 6 + (30 * LineRow) - 8, Text, { 200,200,200 }, Global_EasyGUIFontSize, Global_EasyGUIFont, 400);
+            DrawString(BlockPos[0] + TextPos + 55 + 1, BlockPos[1] + 6 + (30 * LineRow) - 8 + 1, Text, { 0,0,0 }, Global_EasyGUIFont, Global_EasyGUIFontSize, 400);
+            DrawString(BlockPos[0] + TextPos + 55, BlockPos[1] + 6 + (30 * LineRow) - 8, Text, { 200,200,200 }, Global_EasyGUIFont, Global_EasyGUIFontSize, 400);
             return m_ButtonValue;
         }
         //---------------------------------------------------------------------------------------------------------------------------------------------------------
         template<class ValueClass, class CreateClassName>
-        ValueClass GUI_Slider(vector<int>BlockPos, short LineRow, string Text, ValueClass StartValue, ValueClass EndValue, ValueClass& m_SliderValue) noexcept//»æÖÆ»¬Ìõ
+        ValueClass GUI_Slider(vector<int>BlockPos, short LineRow, string Text, ValueClass StartValue, ValueClass EndValue, ValueClass& m_SliderValue) noexcept//ç»˜åˆ¶æ»‘æ¡
         {
-            if (BlockPos[0] == 0 && BlockPos[1] == 0)return 0;//µ±ÎŞblockÔò²»½øĞĞ»æÖÆ
+            if (BlockPos[0] == 0 && BlockPos[1] == 0)return 0;//å½“æ— blockåˆ™ä¸è¿›è¡Œç»˜åˆ¶
             ValueClass ClassValueDetect = 0.1;
-            POINT m_MousePos; GetCursorPos(&m_MousePos);//»ñÈ¡Êó±ê×ø±ê
-            RECT m_WindowPos; GetWindowRect(EasyGUI_WindowHWND, &m_WindowPos);//»ñÈ¡´°¿Ú×ø±ê
-            BOOL DetectMousePos = m_MousePos.x - m_WindowPos.left >= BlockPos[0] + 55 && m_MousePos.x - m_WindowPos.left <= BlockPos[0] + 230 + 55 && m_MousePos.y - m_WindowPos.top >= BlockPos[1] + (6 + 30 * LineRow) && m_MousePos.y - m_WindowPos.top <= BlockPos[1] + 5 + (6 + 30 * LineRow);//´°¿Ú¼ì²â»úÖÆ
-            static BOOL OutSide = false;//·ÀÖ¹Ö¸ÕëÍÑÂäÊ±Ê§È¥¿ØÖÆÁ¦
-            if (GetForegroundWindow() == EasyGUI_WindowHWND)//µ±×îÇ°¶Ë´°¿ÚÎªGUI´°¿Ú½ÓÊÕ°´Å¥ÊÂ¼ş
+            POINT m_MousePos; GetCursorPos(&m_MousePos);//è·å–é¼ æ ‡åæ ‡
+            RECT m_WindowPos; GetWindowRect(EasyGUI_WindowHWND, &m_WindowPos);//è·å–çª—å£åæ ‡
+            BOOL DetectMousePos = m_MousePos.x - m_WindowPos.left >= BlockPos[0] + 55 && m_MousePos.x - m_WindowPos.left <= BlockPos[0] + 230 + 55 && m_MousePos.y - m_WindowPos.top >= BlockPos[1] + (6 + 30 * LineRow) && m_MousePos.y - m_WindowPos.top <= BlockPos[1] + 5 + (6 + 30 * LineRow);//çª—å£æ£€æµ‹æœºåˆ¶
+            static BOOL OutSide = false;//é˜²æ­¢æŒ‡é’ˆè„±è½æ—¶å¤±å»æ§åˆ¶åŠ›
+            if (GetForegroundWindow() == EasyGUI_WindowHWND)//å½“æœ€å‰ç«¯çª—å£ä¸ºGUIçª—å£æ¥æ”¶æŒ‰é’®äº‹ä»¶
             {
-                if (DetectMousePos && GetAsyncKeyState(VK_LEFT) & 0x8000)//µ±Êó±êÒÆ¶¯µ½»¬ÌõÉÏ·½ °´¼ü·´À¡ÊÂ¼ş
+                if (DetectMousePos && GetAsyncKeyState(VK_LEFT) & 0x8000)//å½“é¼ æ ‡ç§»åŠ¨åˆ°æ»‘æ¡ä¸Šæ–¹ æŒ‰é”®åé¦ˆäº‹ä»¶
                 {
-                    if (ClassValueDetect == 0)m_SliderValue--;//¼ì²âÊÇ·ñÊÇ¸¡µãÖµ
+                    if (ClassValueDetect == 0)m_SliderValue--;//æ£€æµ‹æ˜¯å¦æ˜¯æµ®ç‚¹å€¼
                     else m_SliderValue -= 0.05;
                     keybd_event(VK_LEFT, 0, KEYEVENTF_KEYUP, 0);
                 }
                 else if (DetectMousePos && GetAsyncKeyState(VK_RIGHT) & 0x8000) {
-                    if (ClassValueDetect == 0)m_SliderValue++;//¼ì²âÊÇ·ñÊÇ¸¡µãÖµ
+                    if (ClassValueDetect == 0)m_SliderValue++;//æ£€æµ‹æ˜¯å¦æ˜¯æµ®ç‚¹å€¼
                     else m_SliderValue += 0.05;
                     keybd_event(VK_RIGHT, 0, KEYEVENTF_KEYUP, 0);
                 }
@@ -654,27 +702,27 @@ namespace EasyGUI
             int SliderPos = ((float)(m_SliderValue - StartValue) / (float)(EndValue - StartValue) * 230);
             if (SliderPos >= 230)SliderPos = 230; else if (SliderPos <= 0) SliderPos = 0;
             if (m_SliderValue <= StartValue)m_SliderValue = StartValue; else if (m_SliderValue >= EndValue)m_SliderValue = EndValue;
-            stringstream ss; ss << fixed << setprecision(4) << m_SliderValue; ss >> m_SliderValue;//Ö»±£Áô4Î»Ğ¡ÊıµãºóÊı
-            DrawRect(BlockPos[0] - 1 + 55, BlockPos[1] - 1 + (6 + 30 * LineRow), 230 + 2, 7, { 0,0,0 });//ºÚÉ«Íâ±ß¿ò
-            if (DetectMousePos || OutSide)DrawGradientRect(BlockPos[0] + 55, BlockPos[1] + (6 + 30 * LineRow), 230, 5, { 40,40,40 }, { 60,60,60 }, true);//»¬Ìõ±³¾°
+            stringstream ss; ss << fixed << setprecision(4) << m_SliderValue; ss >> m_SliderValue;//åªä¿ç•™4ä½å°æ•°ç‚¹åæ•°
+            DrawRect(BlockPos[0] - 1 + 55, BlockPos[1] - 1 + (6 + 30 * LineRow), 230 + 2, 7, { 0,0,0 });//é»‘è‰²å¤–è¾¹æ¡†
+            if (DetectMousePos || OutSide)DrawGradientRect(BlockPos[0] + 55, BlockPos[1] + (6 + 30 * LineRow), 230, 5, { 40,40,40 }, { 60,60,60 }, true);//æ»‘æ¡èƒŒæ™¯
             else DrawGradientRect(BlockPos[0] + 55, BlockPos[1] + (6 + 30 * LineRow), 230, 5, { 30,30,30 }, { 60,60,60 }, true);
-            DrawGradientRect(BlockPos[0] + 55, BlockPos[1] + (6 + 30 * LineRow), SliderPos, 5, Global_EasyGUIColor, { Global_EasyGUIColor[0] / 5,Global_EasyGUIColor[1] / 5,Global_EasyGUIColor[2] / 5 }, true);//»¬Ìõ
-            DrawString(BlockPos[0] + 55 + 1, BlockPos[1] - 16 + (6 + 30 * LineRow) + 1, Text, { 0,0,0 }, Global_EasyGUIFontSize, Global_EasyGUIFont, 400);
-            DrawString(BlockPos[0] + 55, BlockPos[1] - 16 + (6 + 30 * LineRow), Text, { 200,200,200 }, Global_EasyGUIFontSize, Global_EasyGUIFont, 400);
-            DrawString_Simple(BlockPos[0] + 230 + 10 + 55, BlockPos[1] - 4 + (6 + 30 * LineRow), ss.str(), { 150,150,150 });//·µ»ØÖµ»æÖÆ
+            DrawGradientRect(BlockPos[0] + 55, BlockPos[1] + (6 + 30 * LineRow), SliderPos, 5, Global_EasyGUIColor, { Global_EasyGUIColor[0] / 5,Global_EasyGUIColor[1] / 5,Global_EasyGUIColor[2] / 5 }, true);//æ»‘æ¡
+            DrawString(BlockPos[0] + 55 + 1, BlockPos[1] - 16 + (6 + 30 * LineRow) + 1, Text, { 0,0,0 }, Global_EasyGUIFont, Global_EasyGUIFontSize, 400);
+            DrawString(BlockPos[0] + 55, BlockPos[1] - 16 + (6 + 30 * LineRow), Text, { 200,200,200 }, Global_EasyGUIFont, Global_EasyGUIFontSize, 400);
+            DrawString_Simple(BlockPos[0] + 230 + 10 + 55, BlockPos[1] - 4 + (6 + 30 * LineRow), ss.str(), { 150,150,150 });//è¿”å›å€¼ç»˜åˆ¶
             return m_SliderValue;
         }
         //---------------------------------------------------------------------------------------------------------------------------------------------------------
         template<class CreateClassName>
-        int GUI_KeySelect(vector<int>BlockPos, short LineRow, int& m_KeySelectValue) noexcept//»æÖÆ°´¼üÑ¡È¡°´Å¥
+        int GUI_KeySelect(vector<int>BlockPos, short LineRow, int& m_KeySelectValue) noexcept//ç»˜åˆ¶æŒ‰é”®é€‰å–æŒ‰é’®
         {
-            if (BlockPos[0] == 0 && BlockPos[1] == 0)return 0;//µ±ÎŞblockÔò²»½øĞĞ»æÖÆ
-            if (m_KeySelectValue == 0xCCCCCCCC)m_KeySelectValue = 0;//ĞŞ¸´¹ıÁ¿
-            POINT m_MousePos; GetCursorPos(&m_MousePos);//»ñÈ¡Êó±ê×ø±ê
-            RECT m_WindowPos; GetWindowRect(EasyGUI_WindowHWND, &m_WindowPos);//»ñÈ¡´°¿Ú×ø±ê
-            BOOL DetectMousePos = m_MousePos.x - m_WindowPos.left >= BlockPos[0] + 350 && m_MousePos.x - m_WindowPos.left <= BlockPos[0] + 40 + 350 && m_MousePos.y - m_WindowPos.top >= BlockPos[1] + 26 + (30 * (LineRow - 1)) && m_MousePos.y - m_WindowPos.top <= BlockPos[1] + 12 + 26 + (30 * (LineRow - 1));//´°¿Ú¼ì²â»úÖÆ
-            static BOOL BoxMea = false;//Ö»ÉùÃ÷Ò»´Î³õÊ¼¿ª¹ØÉè¶¨±äÁ¿
-            if (GetForegroundWindow() == EasyGUI_WindowHWND && !Mouse_Slider_)//µ±×îÇ°¶Ë´°¿ÚÎªGUI´°¿Ú½ÓÊÕ°´Å¥ÊÂ¼ş
+            if (BlockPos[0] == 0 && BlockPos[1] == 0)return 0;//å½“æ— blockåˆ™ä¸è¿›è¡Œç»˜åˆ¶
+            if (m_KeySelectValue == 0xCCCCCCCC)m_KeySelectValue = 0;//ä¿®å¤è¿‡é‡
+            POINT m_MousePos; GetCursorPos(&m_MousePos);//è·å–é¼ æ ‡åæ ‡
+            RECT m_WindowPos; GetWindowRect(EasyGUI_WindowHWND, &m_WindowPos);//è·å–çª—å£åæ ‡
+            BOOL DetectMousePos = m_MousePos.x - m_WindowPos.left >= BlockPos[0] + 350 && m_MousePos.x - m_WindowPos.left <= BlockPos[0] + 40 + 350 && m_MousePos.y - m_WindowPos.top >= BlockPos[1] + 26 + (30 * (LineRow - 1)) && m_MousePos.y - m_WindowPos.top <= BlockPos[1] + 12 + 26 + (30 * (LineRow - 1));//çª—å£æ£€æµ‹æœºåˆ¶
+            static BOOL BoxMea = false;//åªå£°æ˜ä¸€æ¬¡åˆå§‹å¼€å…³è®¾å®šå˜é‡
+            if (GetForegroundWindow() == EasyGUI_WindowHWND && !Mouse_Slider_)//å½“æœ€å‰ç«¯çª—å£ä¸ºGUIçª—å£æ¥æ”¶æŒ‰é’®äº‹ä»¶
             {
                 if (!BoxMea && GetAsyncKeyState(VK_LBUTTON) & 0x8000 && DetectMousePos)
                 {
@@ -683,9 +731,9 @@ namespace EasyGUI
                 }
                 else if (BoxMea)
                 {
-                    for (int i = 0x01; i < 0xFE; ++i)//vk¼üÂë±éÀú
+                    for (int i = 0x01; i < 0xFE; ++i)//vké”®ç éå†
                     {
-                        if (GetAsyncKeyState(i) & 0x8000)//µ±°´ÏÂÈÎÒâ¼ü
+                        if (GetAsyncKeyState(i) & 0x8000)//å½“æŒ‰ä¸‹ä»»æ„é”®
                         {
                             m_KeySelectValue = i;
                             BoxMea = false;
@@ -705,14 +753,14 @@ namespace EasyGUI
             }
         }
         //---------------------------------------------------------------------------------------------------------------------------------------------------------
-        BOOL GUI_Tips(vector<int>BlockPos, short LineRow, string m_TipsString) noexcept//Êó±êÖ¸ÕëÌáÊ¾(Ö»Ö§³Öµ¥ĞĞ×Ö·û)   (´úÂëĞ´ÔÚ×îºóÎªÁË²»±»¸²¸Ç»æÖÆ)
+        BOOL GUI_Tips(vector<int>BlockPos, short LineRow, string m_TipsString) noexcept//é¼ æ ‡æŒ‡é’ˆæç¤º(åªæ”¯æŒå•è¡Œå­—ç¬¦)   (ä»£ç å†™åœ¨æœ€åä¸ºäº†ä¸è¢«è¦†ç›–ç»˜åˆ¶)
         {
-            if (BlockPos[0] == 0 && BlockPos[1] == 0)return 0;//µ±ÎŞblockÔò²»½øĞĞ»æÖÆ
-            POINT m_MousePos; GetCursorPos(&m_MousePos);//»ñÈ¡Êó±ê×ø±ê
-            RECT m_WindowPos; GetWindowRect(EasyGUI_WindowHWND, &m_WindowPos);//»ñÈ¡´°¿Ú×ø±ê
-            BOOL DetectMousePos = m_MousePos.x - m_WindowPos.left >= BlockPos[0] + 7 && m_MousePos.x - m_WindowPos.left <= BlockPos[0] + 13 + 7 && m_MousePos.y - m_WindowPos.top >= BlockPos[1] + 26 + (30 * (LineRow - 1)) && m_MousePos.y - m_WindowPos.top <= BlockPos[1] + 12 + 26 + (30 * (LineRow - 1));//´°¿Ú¼ì²â»úÖÆ
-            DrawString_Simple(BlockPos[0] + 7, BlockPos[1] + 27 + (30 * (LineRow - 1)), "[?]", { 100,100,100 });//GUI»æÖÆ
-            if (GetForegroundWindow() == EasyGUI_WindowHWND && DetectMousePos && !Mouse_Slider_)//µ±Êó±êÒÆ¶¯µ½ÎÊºÅ ÇÒGUI´°¿ÚÎª×î¶¥²ã
+            if (BlockPos[0] == 0 && BlockPos[1] == 0)return 0;//å½“æ— blockåˆ™ä¸è¿›è¡Œç»˜åˆ¶
+            POINT m_MousePos; GetCursorPos(&m_MousePos);//è·å–é¼ æ ‡åæ ‡
+            RECT m_WindowPos; GetWindowRect(EasyGUI_WindowHWND, &m_WindowPos);//è·å–çª—å£åæ ‡
+            BOOL DetectMousePos = m_MousePos.x - m_WindowPos.left >= BlockPos[0] + 7 && m_MousePos.x - m_WindowPos.left <= BlockPos[0] + 13 + 7 && m_MousePos.y - m_WindowPos.top >= BlockPos[1] + 26 + (30 * (LineRow - 1)) && m_MousePos.y - m_WindowPos.top <= BlockPos[1] + 12 + 26 + (30 * (LineRow - 1));//çª—å£æ£€æµ‹æœºåˆ¶
+            DrawString_Simple(BlockPos[0] + 7, BlockPos[1] + 27 + (30 * (LineRow - 1)), "[?]", { 100,100,100 });//GUIç»˜åˆ¶
+            if (GetForegroundWindow() == EasyGUI_WindowHWND && DetectMousePos && !Mouse_Slider_)//å½“é¼ æ ‡ç§»åŠ¨åˆ°é—®å· ä¸”GUIçª—å£ä¸ºæœ€é¡¶å±‚
             {
                 DrawRect(m_MousePos.x - m_WindowPos.left + 15, m_MousePos.y - m_WindowPos.top + 15, strlen(m_TipsString.c_str()) * 6, 20, { 0,0,0 });
                 DrawRect(m_MousePos.x - m_WindowPos.left + 15 + 1, m_MousePos.y - m_WindowPos.top + 15 + 1, strlen(m_TipsString.c_str()) * 6 - 2, 20 - 2, { 60,60,60 });
@@ -723,32 +771,32 @@ namespace EasyGUI
             else return false;
         }
         //---------------------------------------------------------------------------------------------------------------------------------------------------------
-        short GUI_BackGround_Multi_interface(short m_BackGroundStyleCode, string Title, vector<string>Block_Button_Text) noexcept//´øÓĞ½çÃæ°´Å¥µÄ±³¾°¿Ø¼ş (´úÂëĞ´ÔÚ×îÇ°Ãæ)
+        short GUI_BackGround_Multi_interface(short m_BackGroundStyleCode, string Title, vector<string>Block_Button_Text) noexcept//å¸¦æœ‰ç•Œé¢æŒ‰é’®çš„èƒŒæ™¯æ§ä»¶ (ä»£ç å†™åœ¨æœ€å‰é¢)
         {
-            POINT m_MousePos; GetCursorPos(&m_MousePos);//»ñÈ¡Êó±ê×ø±ê
+            POINT m_MousePos; GetCursorPos(&m_MousePos);//è·å–é¼ æ ‡åæ ‡
             RECT Windowrect; GetWindowRect(EasyGUI_WindowHWND, &Windowrect);
             short XX = Windowrect.right - Windowrect.left; short YY = Windowrect.bottom - Windowrect.top;
-            vector<int> ²ÊºçÌõÑÕÉ« = { 0,255,255,255,0,255,255,255,0 };
-            vector<int> Ö÷ÌâÑÕÉ« = { 0,0,0,60,60,60,30,30,30,15,15,15,5,5,5,30,30,30 };
-            static short Block_K = 0;//Ñ¡ÔñµÄÑ¡Ïî
-            if (m_BackGroundStyleCode == 0)//Ã«¶¼Ã»ÓĞ
+            vector<int> å½©è™¹æ¡é¢œè‰² = { 0,255,255,255,0,255,255,255,0 };
+            vector<int> ä¸»é¢˜é¢œè‰² = { 0,0,0,60,60,60,30,30,30,15,15,15,5,5,5,30,30,30 };
+            static short Block_K = 0;//é€‰æ‹©çš„é€‰é¡¹
+            if (m_BackGroundStyleCode == 0)//æ¯›éƒ½æ²¡æœ‰
             {
-                ²ÊºçÌõÑÕÉ« = { 16,16,16,16,16,16,16,16,16 };
-                Ö÷ÌâÑÕÉ« = { 0,0,0,60,60,60,30,30,30,15,15,15,15,15,15,15,15,15 };
+                å½©è™¹æ¡é¢œè‰² = { 16,16,16,16,16,16,16,16,16 };
+                ä¸»é¢˜é¢œè‰² = { 0,0,0,60,60,60,30,30,30,15,15,15,15,15,15,15,15,15 };
             }
-            else if (m_BackGroundStyleCode == 1)//·ÂGamesense
+            else if (m_BackGroundStyleCode == 1)//ä»¿Gamesense
             {
-                ²ÊºçÌõÑÕÉ« = { 100,255,255,255,100,255,255,255,100 };
-                Ö÷ÌâÑÕÉ« = { 0,0,0,60,60,60,30,30,30,15,15,15,5,5,5,30,30,30 };
+                å½©è™¹æ¡é¢œè‰² = { 100,255,255,255,100,255,255,255,100 };
+                ä¸»é¢˜é¢œè‰² = { 0,0,0,60,60,60,30,30,30,15,15,15,5,5,5,30,30,30 };
             }
-            else if (m_BackGroundStyleCode == 2)//·ÂGamesense2
+            else if (m_BackGroundStyleCode == 2)//ä»¿Gamesense2
             {
-                ²ÊºçÌõÑÕÉ« = { 0,255,255,255,0,255,255,255,0 };
-                Ö÷ÌâÑÕÉ« = { 0,0,0,60,60,60,30,30,30,15,15,15,3,3,3,30,30,30 };
+                å½©è™¹æ¡é¢œè‰² = { 0,255,255,255,0,255,255,255,0 };
+                ä¸»é¢˜é¢œè‰² = { 0,0,0,60,60,60,30,30,30,15,15,15,3,3,3,30,30,30 };
             }
-            else if (m_BackGroundStyleCode == 3)//²ÊÉ«±äÉ«½¥±äÌõ*****************
+            else if (m_BackGroundStyleCode == 3)//å½©è‰²å˜è‰²æ¸å˜æ¡*****************
             {
-                ²ÊºçÌõÑÕÉ« = {
+                å½©è™¹æ¡é¢œè‰² = {
                     (int)floor(sin((float)GetTickCount64() / 1700 * 2 + 3) * 127 + 128),
                     (int)floor(sin((float)GetTickCount64() / 1700 * 2 + 2 + 3) * 127 + 128),
                     (int)floor(sin((float)GetTickCount64() / 1700 * 2 + 4 + 3) * 127 + 128),
@@ -759,21 +807,21 @@ namespace EasyGUI
                     (int)floor(sin((float)GetTickCount64() / 1700 * 2 + 2 + 1) * 127 + 128),
                     (int)floor(sin((float)GetTickCount64() / 1700 * 2 + 4 + 1) * 127 + 128),
                 };
-                Ö÷ÌâÑÕÉ« = { 0,0,0,60,60,60,30,30,30,15,15,15,3,3,3, Global_EasyGUIColor[0] / 7,Global_EasyGUIColor[1] / 7 ,Global_EasyGUIColor[2] / 7 };
-                Global_EasyGUIStyleCode = 1368;//Ì×Ğ´²Ëµ¥·ç¸ñ´úÂë±äÁ¿(ÓÃÓÚºÍÆäËûº¯Êı¹²Ïí)
+                ä¸»é¢˜é¢œè‰² = { 0,0,0,60,60,60,30,30,30,15,15,15,3,3,3, Global_EasyGUIColor[0] / 7,Global_EasyGUIColor[1] / 7 ,Global_EasyGUIColor[2] / 7 };
+                Global_EasyGUIStyleCode = 1368;//å¥—å†™èœå•é£æ ¼ä»£ç å˜é‡(ç”¨äºå’Œå…¶ä»–å‡½æ•°å…±äº«)
             }
-            else Global_EasyGUIStyleCode = m_BackGroundStyleCode;//Ì×Ğ´²Ëµ¥·ç¸ñ´úÂë±äÁ¿(ÓÃÓÚºÍÆäËûº¯Êı¹²Ïí)
-            DrawRect(0, 0, XX, YY, { Ö÷ÌâÑÕÉ«[0], Ö÷ÌâÑÕÉ«[1], Ö÷ÌâÑÕÉ«[2] });
-            DrawRect(1, 1, XX - 2, YY - 2, { Ö÷ÌâÑÕÉ«[3], Ö÷ÌâÑÕÉ«[4], Ö÷ÌâÑÕÉ«[5] });
-            DrawRect(2, 2, XX - 4, YY - 4, { Ö÷ÌâÑÕÉ«[6], Ö÷ÌâÑÕÉ«[7], Ö÷ÌâÑÕÉ«[8] });
-            DrawRect(5, 5, XX - 10, YY - 10, { Ö÷ÌâÑÕÉ«[3], Ö÷ÌâÑÕÉ«[4], Ö÷ÌâÑÕÉ«[5] });
-            DrawGradientRect(6, 6, XX - 12, YY - 12, { Ö÷ÌâÑÕÉ«[12], Ö÷ÌâÑÕÉ«[13], Ö÷ÌâÑÕÉ«[14] }, { Ö÷ÌâÑÕÉ«[15], Ö÷ÌâÑÕÉ«[16], Ö÷ÌâÑÕÉ«[17] }, true);//BackGround Gradient
+            else Global_EasyGUIStyleCode = m_BackGroundStyleCode;//å¥—å†™èœå•é£æ ¼ä»£ç å˜é‡(ç”¨äºå’Œå…¶ä»–å‡½æ•°å…±äº«)
+            DrawRect(0, 0, XX, YY, { ä¸»é¢˜é¢œè‰²[0], ä¸»é¢˜é¢œè‰²[1], ä¸»é¢˜é¢œè‰²[2] });
+            DrawRect(1, 1, XX - 2, YY - 2, { ä¸»é¢˜é¢œè‰²[3], ä¸»é¢˜é¢œè‰²[4], ä¸»é¢˜é¢œè‰²[5] });
+            DrawRect(2, 2, XX - 4, YY - 4, { ä¸»é¢˜é¢œè‰²[6], ä¸»é¢˜é¢œè‰²[7], ä¸»é¢˜é¢œè‰²[8] });
+            DrawRect(5, 5, XX - 10, YY - 10, { ä¸»é¢˜é¢œè‰²[3], ä¸»é¢˜é¢œè‰²[4], ä¸»é¢˜é¢œè‰²[5] });
+            DrawGradientRect(6, 6, XX - 12, YY - 12, { ä¸»é¢˜é¢œè‰²[12], ä¸»é¢˜é¢œè‰²[13], ä¸»é¢˜é¢œè‰²[14] }, { ä¸»é¢˜é¢œè‰²[15], ä¸»é¢˜é¢œè‰²[16], ä¸»é¢˜é¢œè‰²[17] }, true);//BackGround Gradient
             //------------------------
-            DrawRect(6, 6, 140 + 1, YY - 12, { Ö÷ÌâÑÕÉ«[3], Ö÷ÌâÑÕÉ«[4], Ö÷ÌâÑÕÉ«[5] });
-            DrawRect(6, 6, 140, YY - 12, { Ö÷ÌâÑÕÉ«[9], Ö÷ÌâÑÕÉ«[10], Ö÷ÌâÑÕÉ«[11] });
-            DrawString(60 - strlen(Title.c_str()) * 6, 15, Title, Global_EasyGUIColor, 32, L"Verdana", 1000);
-            DrawRect(6, 60, 140 + 1, 1, { Ö÷ÌâÑÕÉ«[3], Ö÷ÌâÑÕÉ«[4], Ö÷ÌâÑÕÉ«[5] });
-            for (short Bb = 0; Bb < Block_Button_Text.size(); ++Bb)//±éÀú·ÖÀëÇø¿é°´Å¥
+            DrawRect(6, 6, 140 + 1, YY - 12, { ä¸»é¢˜é¢œè‰²[3], ä¸»é¢˜é¢œè‰²[4], ä¸»é¢˜é¢œè‰²[5] });
+            DrawRect(6, 6, 140, YY - 12, { ä¸»é¢˜é¢œè‰²[9], ä¸»é¢˜é¢œè‰²[10], ä¸»é¢˜é¢œè‰²[11] });
+            DrawString(60 - strlen(Title.c_str()) * 6, 15, Title, Global_EasyGUIColor, L"Verdana", 32, 1000);
+            DrawRect(6, 60, 140 + 1, 1, { ä¸»é¢˜é¢œè‰²[3], ä¸»é¢˜é¢œè‰²[4], ä¸»é¢˜é¢œè‰²[5] });
+            for (short Bb = 0; Bb < Block_Button_Text.size(); ++Bb)//éå†åˆ†ç¦»åŒºå—æŒ‰é’®
             {
                 if (Block_K == Bb)
                 {
@@ -787,18 +835,64 @@ namespace EasyGUI
                         Block_K = Bb; mouse_event(MOUSEEVENTF_LEFTUP, 0, 0, 0, 0);
                     }
                 }
-                DrawString(20, 61 + 32 * Bb + 4, Block_Button_Text[Bb], Global_EasyGUIColor, 20, L"Verdana", 600);
+                DrawString(20, 61 + 32 * Bb + 4, Block_Button_Text[Bb], Global_EasyGUIColor, L"Verdana", 20, 600);
             }
             //------------------------
-            if (m_BackGroundStyleCode != 0)//Ã«¶¼Ã»ÓĞ
+            if (m_BackGroundStyleCode != 0)//æ¯›éƒ½æ²¡æœ‰
             {
-                DrawGradientRect(7, 7, (XX - 7 * 2) / 2, 2, { ²ÊºçÌõÑÕÉ«[0] / 2, ²ÊºçÌõÑÕÉ«[1] / 2, ²ÊºçÌõÑÕÉ«[2] / 2 }, { ²ÊºçÌõÑÕÉ«[3] / 2, ²ÊºçÌõÑÕÉ«[4] / 2, ²ÊºçÌõÑÕÉ«[5] / 2 }, false);
-                DrawGradientRect(7 + (XX - 7 * 2) / 2, 7, (XX - 7 * 2) / 2, 2, { ²ÊºçÌõÑÕÉ«[3] / 2, ²ÊºçÌõÑÕÉ«[4] / 2, ²ÊºçÌõÑÕÉ«[5] / 2 }, { ²ÊºçÌõÑÕÉ«[6] / 2, ²ÊºçÌõÑÕÉ«[7] / 2, ²ÊºçÌõÑÕÉ«[8] / 2 }, false);
-                DrawGradientRect(7, 7, (XX - 7 * 2) / 2, 1, { ²ÊºçÌõÑÕÉ«[0], ²ÊºçÌõÑÕÉ«[1], ²ÊºçÌõÑÕÉ«[2] }, { ²ÊºçÌõÑÕÉ«[3], ²ÊºçÌõÑÕÉ«[4], ²ÊºçÌõÑÕÉ«[5] }, false);
-                DrawGradientRect(7 + (XX - 7 * 2) / 2, 7, (XX - 7 * 2) / 2, 1, { ²ÊºçÌõÑÕÉ«[3], ²ÊºçÌõÑÕÉ«[4], ²ÊºçÌõÑÕÉ«[5] }, { ²ÊºçÌõÑÕÉ«[6], ²ÊºçÌõÑÕÉ«[7], ²ÊºçÌõÑÕÉ«[8] }, false);
+                DrawGradientRect(7, 7, (XX - 7 * 2) / 2, 2, { å½©è™¹æ¡é¢œè‰²[0] / 2, å½©è™¹æ¡é¢œè‰²[1] / 2, å½©è™¹æ¡é¢œè‰²[2] / 2 }, { å½©è™¹æ¡é¢œè‰²[3] / 2, å½©è™¹æ¡é¢œè‰²[4] / 2, å½©è™¹æ¡é¢œè‰²[5] / 2 }, false);
+                DrawGradientRect(7 + (XX - 7 * 2) / 2, 7, (XX - 7 * 2) / 2, 2, { å½©è™¹æ¡é¢œè‰²[3] / 2, å½©è™¹æ¡é¢œè‰²[4] / 2, å½©è™¹æ¡é¢œè‰²[5] / 2 }, { å½©è™¹æ¡é¢œè‰²[6] / 2, å½©è™¹æ¡é¢œè‰²[7] / 2, å½©è™¹æ¡é¢œè‰²[8] / 2 }, false);
+                DrawGradientRect(7, 7, (XX - 7 * 2) / 2, 1, { å½©è™¹æ¡é¢œè‰²[0], å½©è™¹æ¡é¢œè‰²[1], å½©è™¹æ¡é¢œè‰²[2] }, { å½©è™¹æ¡é¢œè‰²[3], å½©è™¹æ¡é¢œè‰²[4], å½©è™¹æ¡é¢œè‰²[5] }, false);
+                DrawGradientRect(7 + (XX - 7 * 2) / 2, 7, (XX - 7 * 2) / 2, 1, { å½©è™¹æ¡é¢œè‰²[3], å½©è™¹æ¡é¢œè‰²[4], å½©è™¹æ¡é¢œè‰²[5] }, { å½©è™¹æ¡é¢œè‰²[6], å½©è™¹æ¡é¢œè‰²[7], å½©è™¹æ¡é¢œè‰²[8] }, false);
             }
             if (m_MousePos.x - Windowrect.left >= 6 && m_MousePos.x - Windowrect.left <= 140 + 6 && m_MousePos.y - Windowrect.top >= 6 + 55 && m_MousePos.y - Windowrect.top <= YY - 12)Mouse_Block_ = true;
             return Block_K + 1;
+        }
+        //---------------------------------------------------------------------------------------------------------------------------------------------------------
+        template<class ValueClass, class CreateClassName>
+        ValueClass GUI_Slider_Rainbow(vector<int>BlockPos, short LineRow, string Text, ValueClass StartValue, ValueClass EndValue, ValueClass& m_SliderValue) noexcept//ç»˜åˆ¶å½©è™¹å˜è‰²æ»‘æ¡
+        {
+            if (BlockPos[0] == 0 && BlockPos[1] == 0)return 0;//å½“æ— blockåˆ™ä¸è¿›è¡Œç»˜åˆ¶
+            ValueClass ClassValueDetect = 0.1;
+            POINT m_MousePos; GetCursorPos(&m_MousePos);//è·å–é¼ æ ‡åæ ‡
+            RECT m_WindowPos; GetWindowRect(EasyGUI_WindowHWND, &m_WindowPos);//è·å–çª—å£åæ ‡
+            BOOL DetectMousePos = m_MousePos.x - m_WindowPos.left >= BlockPos[0] + 55 && m_MousePos.x - m_WindowPos.left <= BlockPos[0] + 230 + 55 && m_MousePos.y - m_WindowPos.top >= BlockPos[1] + (6 + 30 * LineRow) && m_MousePos.y - m_WindowPos.top <= BlockPos[1] + 5 + (6 + 30 * LineRow);//çª—å£æ£€æµ‹æœºåˆ¶
+            static BOOL OutSide = false;//é˜²æ­¢æŒ‡é’ˆè„±è½æ—¶å¤±å»æ§åˆ¶åŠ›
+            if (GetForegroundWindow() == EasyGUI_WindowHWND)//å½“æœ€å‰ç«¯çª—å£ä¸ºGUIçª—å£æ¥æ”¶æŒ‰é’®äº‹ä»¶
+            {
+                if (DetectMousePos && GetAsyncKeyState(VK_LEFT) & 0x8000)//å½“é¼ æ ‡ç§»åŠ¨åˆ°æ»‘æ¡ä¸Šæ–¹ æŒ‰é”®åé¦ˆäº‹ä»¶
+                {
+                    if (ClassValueDetect == 0)m_SliderValue--;//æ£€æµ‹æ˜¯å¦æ˜¯æµ®ç‚¹å€¼
+                    else m_SliderValue -= 0.05;
+                    keybd_event(VK_LEFT, 0, KEYEVENTF_KEYUP, 0);
+                }
+                else if (DetectMousePos && GetAsyncKeyState(VK_RIGHT) & 0x8000) {
+                    if (ClassValueDetect == 0)m_SliderValue++;//æ£€æµ‹æ˜¯å¦æ˜¯æµ®ç‚¹å€¼
+                    else m_SliderValue += 0.05;
+                    keybd_event(VK_RIGHT, 0, KEYEVENTF_KEYUP, 0);
+                }
+                if (GetAsyncKeyState(VK_LBUTTON) & 0x8000 && DetectMousePos && !OutSide)OutSide = true;
+                if (OutSide && GetAsyncKeyState(VK_LBUTTON) & 0x8000) {
+                    m_SliderValue = ((m_MousePos.x - BlockPos[0] - 54 - m_WindowPos.left) * (EndValue - StartValue) / 230) + StartValue;
+                    Mouse_Block_ = true; Mouse_Slider_ = true;
+                }
+                else if (!(GetAsyncKeyState(VK_LBUTTON) & 0x8000))
+                {
+                    OutSide = false; Mouse_Slider_ = false;
+                }
+            }
+            int SliderPos = ((float)(m_SliderValue - StartValue) / (float)(EndValue - StartValue) * 230);
+            if (SliderPos >= 230)SliderPos = 230; else if (SliderPos <= 0) SliderPos = 0;
+            if (m_SliderValue <= StartValue)m_SliderValue = StartValue; else if (m_SliderValue >= EndValue)m_SliderValue = EndValue;
+            stringstream ss; ss << fixed << setprecision(4) << m_SliderValue; ss >> m_SliderValue;//åªä¿ç•™4ä½å°æ•°ç‚¹åæ•°
+            DrawRect(BlockPos[0] - 1 + 55, BlockPos[1] - 1 + (6 + 30 * LineRow), 230 + 2, 7, { 0,0,0 });//é»‘è‰²å¤–è¾¹æ¡†
+            DrawGradientRect(BlockPos[0] + 55, BlockPos[1] + (6 + 30 * LineRow), 230, 5, { (int)floor(sin((float)GetTickCount64() / 2000 * 2 + 2) * 127 + 128), (int)floor(sin((float)GetTickCount64() / 2000 * 2 + 2 + 2) * 127 + 128), (int)floor(sin((float)GetTickCount64() / 2000 * 2 + 4 + 2) * 127 + 128) }, { (int)floor(sin((float)GetTickCount64() / 2000 * 2) * 127 + 128), (int)floor(sin((float)GetTickCount64() / 2000 * 2 + 2) * 127 + 128), (int)floor(sin((float)GetTickCount64() / 2000 * 2 + 4) * 127 + 128) }, false);//æ»‘æ¡
+            if (DetectMousePos || OutSide)DrawGradientRect(SliderPos + BlockPos[0] + 55, BlockPos[1] + (6 + 30 * LineRow), 230 - SliderPos, 5, { 40,40,40 }, { 60,60,60 }, true);//æ»‘æ¡èƒŒæ™¯(å‰è´Ÿè´£é®æŒ¡)
+            else DrawGradientRect(SliderPos + BlockPos[0] + 55, BlockPos[1] + (6 + 30 * LineRow), 230 - SliderPos, 5, { 30,30,30 }, { 60,60,60 }, true);
+            DrawString(BlockPos[0] + 55 + 1, BlockPos[1] - 16 + (6 + 30 * LineRow) + 1, Text, { 0,0,0 }, Global_EasyGUIFont, Global_EasyGUIFontSize, 400);
+            DrawString(BlockPos[0] + 55, BlockPos[1] - 16 + (6 + 30 * LineRow), Text, { 200,200,200 }, Global_EasyGUIFont, Global_EasyGUIFontSize, 400);
+            DrawString_Simple(BlockPos[0] + 230 + 10 + 55, BlockPos[1] - 4 + (6 + 30 * LineRow), ss.str(), { 150,150,150 });//è¿”å›å€¼ç»˜åˆ¶
+            return m_SliderValue;
         }
         //---------------------------------------------------------------------------------------------------------------------------------------------------------
     private:
