@@ -1,6 +1,6 @@
 # 🤖EasyGUI
 Lightweight GUI library for console programs
-# 😀Characteristic
+# 😀Features
 - For people(beginner,student)
 - C++ worker
 - Fast
