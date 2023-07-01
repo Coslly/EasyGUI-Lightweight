@@ -1,4 +1,4 @@
-# EasyGUI
+# 🤖EasyGUI
 Lightweight GUI library for console programs
 # 😀Characteristic
 - For people(beginner,student)
