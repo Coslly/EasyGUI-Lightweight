@@ -280,6 +280,18 @@ namespace EasyGUI
         {
             Global_EasyGUIColor = GlobalColor;
         }
+        LPCWSTR Global_Get_EasyGUI_Font() noexcept//获取全局GUI字体
+        {
+            return Global_EasyGUIFont;
+        }
+        int Global_Get_EasyGUI_FontSize() noexcept//获取全局GUI字体大小
+        {
+            return Global_EasyGUIFontSize;
+        }
+        vector<int> Global_Get_EasyGUI_Color() noexcept//获取全局主题颜色
+        {
+            return Global_EasyGUIColor;
+        }
         //---------------------------------------------------------------------------------------------------------------------------------------------------------
         BOOL Window_Create(int SizeX, int SizeY, LPCWSTR m_WindowTitle, BOOL IfTop = false) noexcept//创建窗口
         {
@@ -429,27 +441,17 @@ namespace EasyGUI
             const short XX = EasyGUI_WindowPos.right - EasyGUI_WindowPos.left; const short YY = EasyGUI_WindowPos.bottom - EasyGUI_WindowPos.top;
             vector<int> 彩虹条颜色 = { 0,255,255,255,0,255,255,255,0 };
             vector<int> 主题颜色 = { 0,0,0,60,60,60,30,30,30,15,15,15,5,5,5,30,30,30 };
-            if (m_BackGroundStyleCode == 0)//经典黑色主题
+            if (m_BackGroundStyleCode == 0)//毛都没有
             {
-                彩虹条颜色 = { 0,255,255,255,0,255,255,255,0 };
-                主题颜色 = { 0,0,0,60,60,60,30,30,30,15,15,15,5,5,5,30,30,30 };
+                彩虹条颜色 = { 16,16,16,16,16,16,16,16,16 };
+                主题颜色 = { 0,0,0,60,60,60,30,30,30,15,15,15,15,15,15,15,15,15 };
             }
-            else if (m_BackGroundStyleCode == 1)//白色
-            {
-                彩虹条颜色 = { 255,255,255,255,255,255,255,255,255 };
-                主题颜色 = { 0,0,0,60,60,60,30,30,30,15,15,15,3,3,3,50,50,50 };
-            }
-            else if (m_BackGroundStyleCode == 2)//黑白色
-            {
-                彩虹条颜色 = { 150,150,150,255,255,255,150,150,150 };
-                主题颜色 = { 0,0,0,60,60,60,30,30,30,15,15,15,3,3,3,30,30,30 };
-            }
-            else if (m_BackGroundStyleCode == 1337)//仿Gamesense
+            else if (m_BackGroundStyleCode == 1337)//仿
             {
                 彩虹条颜色 = { 100,255,255,255,100,255,255,255,100 };
                 主题颜色 = { 0,0,0,60,60,60,30,30,30,15,15,15,5,5,5,30,30,30 };
             }
-            else if (m_BackGroundStyleCode == 1367)//仿Gamesense2
+            else if (m_BackGroundStyleCode == 1367)//仿2
             {
                 彩虹条颜色 = { 0,255,255,255,0,255,255,255,0 };
                 主题颜色 = { 0,0,0,60,60,60,30,30,30,15,15,15,3,3,3,30,30,30 };
@@ -469,40 +471,21 @@ namespace EasyGUI
                 };
                 主题颜色 = { 0,0,0,60,60,60,30,30,30,15,15,15,3,3,3, Global_EasyGUIColor[0] / 7,Global_EasyGUIColor[1] / 7 ,Global_EasyGUIColor[2] / 7 };
             }
-            else if (m_BackGroundStyleCode == 1369)//黑白变色渐变条*****************
+            else if (m_BackGroundStyleCode == 1369)//主题色渐变条*****************
             {
+                const vector<float> Sins = { sin((float)GetTickCount64() / 800 + 0), sin((float)GetTickCount64() / 800 + 1),sin((float)GetTickCount64() / 800 + 2) };
                 彩虹条颜色 = {
-                   55 + (int)floor(sin((float)GetTickCount64() / 500 + 3) * 100 + 100),
-                   55 + (int)floor(sin((float)GetTickCount64() / 500 + 3) * 100 + 100),
-                   55 + (int)floor(sin((float)GetTickCount64() / 500 + 3) * 100 + 100),
-                   55 + (int)floor(sin((float)GetTickCount64() / 500 + 2) * 100 + 100),
-                   55 + (int)floor(sin((float)GetTickCount64() / 500 + 2) * 100 + 100),
-                   55 + (int)floor(sin((float)GetTickCount64() / 500 + 2) * 100 + 100),
-                   55 + (int)floor(sin((float)GetTickCount64() / 500 + 1) * 100 + 100),
-                   55 + (int)floor(sin((float)GetTickCount64() / 500 + 1) * 100 + 100),
-                   55 + (int)floor(sin((float)GetTickCount64() / 500 + 1) * 100 + 100),
+                    (int)(Sins[2] * Global_EasyGUIColor[0] / 2 + Global_EasyGUIColor[0] / 2),
+                    (int)(Sins[2] * Global_EasyGUIColor[1] / 2 + Global_EasyGUIColor[1] / 2),
+                    (int)(Sins[2] * Global_EasyGUIColor[2] / 2 + Global_EasyGUIColor[2] / 2),
+                    (int)(Sins[1] * Global_EasyGUIColor[0] / 2 + Global_EasyGUIColor[0] / 2),
+                    (int)(Sins[1] * Global_EasyGUIColor[1] / 2 + Global_EasyGUIColor[1] / 2),
+                    (int)(Sins[1] * Global_EasyGUIColor[2] / 2 + Global_EasyGUIColor[2] / 2),
+                    (int)(Sins[0] * Global_EasyGUIColor[0] / 2 + Global_EasyGUIColor[0] / 2),
+                    (int)(Sins[0] * Global_EasyGUIColor[1] / 2 + Global_EasyGUIColor[1] / 2),
+                    (int)(Sins[0] * Global_EasyGUIColor[2] / 2 + Global_EasyGUIColor[2] / 2)
                 };
-                主题颜色 = { 0,0,0,60,60,60,30,30,30,15,15,15,15,15,15,5,5,5 };
-            }
-            else if (m_BackGroundStyleCode == -1)//粉蓝色
-            {
-                彩虹条颜色 = { 255,150,255,200,170,255,150,200,255 };
-                主题颜色 = { 0,0,0,60,60,60,30,30,30,15,15,15,3,3,3,30,25,35 };
-            }
-            else if (m_BackGroundStyleCode == -2)//橙黄色
-            {
-                彩虹条颜色 = { 230,80,80,230,120,60,255,200,30 };
-                主题颜色 = { 0,0,0,60,60,60,30,30,30,15,15,15,3,3,3,40,25,25 };
-            }
-            else if (m_BackGroundStyleCode == -3)//青绿色
-            {
-                彩虹条颜色 = { 100,200,100,100,200,150,100,180,230 };
-                主题颜色 = { 0,0,0,60,60,60,30,30,30,15,15,15,3,3,3,0,30,30 };
-            }
-            else if (m_BackGroundStyleCode == 999)//毛都没有
-            {
-                彩虹条颜色 = { 16,16,16,16,16,16,16,16,16 };
-                主题颜色 = { 0,0,0,60,60,60,30,30,30,15,15,15,15,15,15,15,15,15 };
+                主题颜色 = { 0,0,0,60,60,60,30,30,30,15,15,15,0,0,0,Global_EasyGUIColor[0] / 5,Global_EasyGUIColor[1] / 5,Global_EasyGUIColor[2] / 5 };
             }
             In_DrawRect(0, 0, XX, YY, { 主题颜色[0], 主题颜色[1], 主题颜色[2] });
             In_DrawRect(1, 1, XX - 2, YY - 2, { 主题颜色[3], 主题颜色[4], 主题颜色[5] });
@@ -510,7 +493,7 @@ namespace EasyGUI
             In_DrawRect(5, 5, XX - 10, YY - 10, { 主题颜色[3], 主题颜色[4], 主题颜色[5] });
             In_DrawGradientRect(6, 6, XX - 12, YY - 12, { 主题颜色[12], 主题颜色[13], 主题颜色[14] }, { 主题颜色[15], 主题颜色[16], 主题颜色[17] }, true);//BackGround Gradient
             //-----------彩虹条
-            if (m_BackGroundStyleCode != 999)//毛都没有
+            if (m_BackGroundStyleCode != 0)//毛都没有
             {
                 In_DrawGradientRect(7, 7, (XX - 7 * 2) / 2, 2, { 彩虹条颜色[0] / 2, 彩虹条颜色[1] / 2, 彩虹条颜色[2] / 2 }, { 彩虹条颜色[3] / 2, 彩虹条颜色[4] / 2, 彩虹条颜色[5] / 2 }, false);
                 In_DrawGradientRect(7 + (XX - 7 * 2) / 2, 7, (XX - 7 * 2) / 2, 2, { 彩虹条颜色[3] / 2, 彩虹条颜色[4] / 2, 彩虹条颜色[5] / 2 }, { 彩虹条颜色[6] / 2, 彩虹条颜色[7] / 2, 彩虹条颜色[8] / 2 }, false);
@@ -539,7 +522,7 @@ namespace EasyGUI
         {
             In_DrawRect(X, Y, 400, YY, { 0,0,0 });//黑色外边框
             In_DrawRect(X + 1, Y + 1, 400 - 2, YY - 2, { 60,60,60 });//白色外边框
-            if (Global_EasyGUIStyleCode == 1368)In_DrawGradientRect(X + 2, Y + 2, 400 - 4, YY - 4, { 10,10,10 }, { Global_EasyGUIColor[0] / 10,Global_EasyGUIColor[1] / 10 ,Global_EasyGUIColor[2] / 10 }, true);//菜单代码渐变背景
+            if (Global_EasyGUIStyleCode == 1368 || Global_EasyGUIStyleCode == 1369)In_DrawGradientRect(X + 2, Y + 2, 400 - 4, YY - 4, { 10,10,10 }, { Global_EasyGUIColor[0] / 10,Global_EasyGUIColor[1] / 10 ,Global_EasyGUIColor[2] / 10 }, true);//菜单代码渐变背景
             else In_DrawRect(X + 2, Y + 2, 400 - 4, YY - 4, { 15,15,15 });//默认背景
             In_DrawString(X + 20 + 1, Y - 7 + 1, m_BlockText.c_str(), { 50,50,50 }, L"Small Fonts", 14, 700);
             In_DrawString(X + 20, Y - 7, m_BlockText.c_str(), { 200,200,200 }, L"Small Fonts", 14, 700);
