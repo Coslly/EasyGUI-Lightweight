@@ -11,7 +11,7 @@ Which projects use it?
 - Can be modified at will.
 # 🥰Showcase(example)
 ![image](https://github.com/Coslly/EasyGUI-Lightweight/blob/main/PAA.png?raw=true)
-# 😧How to use? (CPP Code)
+# 😧How to use it?(CPP Code)
 ### - Initialization
 ```cpp
 //Initialize GUI variables
