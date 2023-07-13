@@ -30,6 +30,8 @@ while (1)
 
     GUI_Variable.GUI_Checkbox(Block, 1, "Checkbox.", UI_Checkbox);
     GUI_Variable.GUI_Button(Block, 2, "Button", 90, UI_Button);
+    //Draw
+    GUI_Variable.Draw_GUI();
     Sleep(1);
 }
 ```
@@ -46,6 +48,8 @@ while (1)
 
         GUI_Variable.GUI_Checkbox(Block, 1, "Checkbox.", UI_Checkbox);
         GUI_Variable.GUI_Button(Block, 2, "Button", 90, UI_Button);
+        //Draw
+        GUI_Variable.Draw_GUI();
     }
 }
 ```
