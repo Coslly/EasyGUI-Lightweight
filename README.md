@@ -17,6 +17,7 @@ GUI_Variable.Window_Create(1000, 1000, L"Test Windows", true);
 ```
 ### Add controls
 You need to add a control block.
+
 If you add the Window_Move() function inside the loop then you don't need to add the Sleep() function
 ```cpp
 while(1)
