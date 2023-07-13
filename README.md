@@ -1,5 +1,6 @@
 # 🤖EasyGUI
-Lightweight GUI library for console programs
+Lightweight GUI library for C++.
+Projects starting January 2023!
 
 Which projects use it?
 - [TaHack](https://github.com/Coslly/TaHack.git)
