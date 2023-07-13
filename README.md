@@ -8,3 +8,4 @@ Lightweight GUI library for console programs
 - Can be modified at will.
 # 🥰Showcase
 ![image](https://github.com/Coslly/EasyGUI-Lightweight/blob/main/PAA.png?raw=true)
+# 😧How to use?
