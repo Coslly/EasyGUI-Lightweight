@@ -54,3 +54,20 @@ while (1)
 }
 ```
 ### Function special class
+When the same function is executed, different classes need to be entered in the template. Of course you can create. :)
+```cpp
+while (1)
+{
+    //Variable
+    static int UI_Slider_1 = 0;
+    static int UI_Slider_2 = 10;
+
+    vector<int> Block = GUI_Variable.GUI_Block(30, 30, 300, "Test Block");//Block
+
+    GUI_Variable.GUI_Slider<int, class GUI_Class_1>(Block, 1, "Slider 1", 0, 10, UI_Slider_1);
+    GUI_Variable.GUI_Slider<int, class GUI_Class_2>(Block, 1, "Slider 2", 0, 10, UI_Slider_2);
+    //Draw
+    GUI_Variable.Draw_GUI();
+    Sleep(1);
+}
+```
