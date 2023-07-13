@@ -6,6 +6,6 @@ Lightweight GUI library for console programs
 - Fast
 - Simple
 - Can be modified at will.
-# 🥰Showcase
+# 🥰Showcase(example)
 ![image](https://github.com/Coslly/EasyGUI-Lightweight/blob/main/PAA.png?raw=true)
 # 😧How to use?
