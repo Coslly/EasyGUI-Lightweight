@@ -13,7 +13,7 @@ Lightweight GUI library for console programs
 ```cpp
 //Initialize GUI variables
 EasyGUI::EasyGUI GUI_Variable;
-GUI_Variable.Window_Create(1000, 1000, L"Test Windows", true);
+GUI_Variable.Window_Create(500, 500, L"Test Windows", false);
 ```
 ### - Add controls
 You need to add a control block.
@@ -26,9 +26,11 @@ while (1)
     static BOOL UI_Checkbox = false;
     static BOOL UI_Button = false;
 
+    GUI_Variable.GUI_BackGround();//BackGround
+
     vector<int> Block = GUI_Variable.GUI_Block(30, 30, 300, "Test Block");//Block
 
-    GUI_Variable.GUI_Checkbox(Block, 1, "Checkbox.", UI_Checkbox);
+    GUI_Variable.GUI_Checkbox(Block, 1, "Checkbox", UI_Checkbox);
     GUI_Variable.GUI_Button(Block, 2, "Button", 90, UI_Button);
     //Draw
     GUI_Variable.Draw_GUI();
@@ -42,11 +44,14 @@ while (1)
     //Variable
     static BOOL UI_Checkbox = false;
     static BOOL UI_Button = false;
+
+    GUI_Variable.GUI_BackGround();//BackGround
+
     if (!GUI_Variable.Window_Move())//MoveWindow Funtion
     {
         vector<int> Block = GUI_Variable.GUI_Block(30, 30, 300, "Test Block");//Block
 
-        GUI_Variable.GUI_Checkbox(Block, 1, "Checkbox.", UI_Checkbox);
+        GUI_Variable.GUI_Checkbox(Block, 1, "Checkbox", UI_Checkbox);
         GUI_Variable.GUI_Button(Block, 2, "Button", 90, UI_Button);
         //Draw
         GUI_Variable.Draw_GUI();
@@ -62,6 +67,8 @@ while (1)
     static int UI_Slider_1 = 0;
     static int UI_Slider_2 = 10;
 
+    GUI_Variable.GUI_BackGround();//BackGround
+
     vector<int> Block = GUI_Variable.GUI_Block(30, 30, 300, "Test Block");//Block
 
     GUI_Variable.GUI_Slider<int, class GUI_Class_1>(Block, 1, "Slider 1", 0, 10, UI_Slider_1);
@@ -69,5 +76,31 @@ while (1)
     //Draw
     GUI_Variable.Draw_GUI();
     Sleep(1);
+}
+```
+### - Overall code
+```cpp
+EasyGUI::EasyGUI GUI_Variable;//Initialize GUI variables
+GUI_Variable.Window_Create(500, 300, L"Test Windows", false);
+while (1)
+{
+    //Variable
+    static BOOL UI_Checkbox = false;
+    static int UI_Slider = 0;
+    static BOOL UI_Button = false;
+    if (!GUI_Variable.Window_Move())//MoveWindow Funtion
+    {
+        //BackGround
+        GUI_Variable.GUI_BackGround();
+
+        vector<int> Block = GUI_Variable.GUI_Block(30, 30, 200, "Block");//Block
+
+        GUI_Variable.GUI_Checkbox(Block, 1, "Checkbox", UI_Checkbox);
+        GUI_Variable.GUI_Slider<int, class GUI_Class_1>(Block, 2, "Slider", 0, 10, UI_Slider);
+        GUI_Variable.GUI_Button(Block, 3, "Button", 90, UI_Button);
+
+        //Draw
+        GUI_Variable.Draw_GUI();
+    }
 }
 ```
