@@ -33,3 +33,19 @@ while (1)
     Sleep(1);
 }
 ```
+Window_Move() function
+```cpp
+while (1)
+{
+    //Variable
+    static BOOL UI_Checkbox = false;
+    static BOOL UI_Button = false;
+    if (!GUI_Variable.Window_Move())//MoveWindow Funtion
+    {
+        vector<int> Block = GUI_Variable.GUI_Block(30, 30, 300, "Test Block");//Block
+
+        GUI_Variable.GUI_Checkbox(Block, 1, "Checkbox.", UI_Checkbox);
+        GUI_Variable.GUI_Button(Block, 2, "Button", 90, UI_Button);
+    }
+}
+```
