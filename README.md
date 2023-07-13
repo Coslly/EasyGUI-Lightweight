@@ -12,9 +12,9 @@ Which projects use it?
 - Fast
 - Simple
 - Can be modified at will.
-# 🥰Showcase(example)
+# 🥰Showcase(Example)
 ![image](https://github.com/Coslly/EasyGUI-Lightweight/blob/main/PAA.png?raw=true)
-# 😧How to use it?(CPP Code)
+# 😧How to use it?(Cpp Code)
 ### - Initialization
 ```cpp
 //Initialize GUI variables
@@ -84,7 +84,7 @@ while (1)
     Sleep(1);
 }
 ```
-### - Overall code
+### - Overall Code (Example Code)
 ```cpp
 EasyGUI::EasyGUI GUI_Variable;//Initialize GUI variables
 GUI_Variable.Window_Create(500, 300, L"Test Windows", false);
