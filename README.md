@@ -20,16 +20,16 @@ You need to add a control block.
 
 If you add the Window_Move() function inside the loop then you don't need to add the Sleep() function
 ```cpp
-    while (1)
-    {
-        //Variable
-        static BOOL UI_Checkbox = false;
-        static BOOL UI_Button = false;
+while (1)
+{
+    //Variable
+    static BOOL UI_Checkbox = false;
+    static BOOL UI_Button = false;
 
-        vector<int> Block = GUI_Variable.GUI_Block(30, 30, 300, "Test Block");//Block
+    vector<int> Block = GUI_Variable.GUI_Block(30, 30, 300, "Test Block");//Block
 
-        GUI_Variable.GUI_Checkbox(Block, 1, "Checkbox.", UI_Checkbox);
-        GUI_Variable.GUI_Button(Block, 2, "Button", 90, UI_Button);
-        Sleep(1);
-    }
+    GUI_Variable.GUI_Checkbox(Block, 1, "Checkbox.", UI_Checkbox);
+    GUI_Variable.GUI_Button(Block, 2, "Button", 90, UI_Button);
+    Sleep(1);
+}
 ```
