@@ -18,6 +18,8 @@ GUI_Variable.Window_Create(1000, 1000, L"Test Windows", true);
 ### Add controls
 You need to add a control block.
 ```cpp
+while(1)
+{
 //Variable
 static BOOL UI_Checkbox = false;
 static BOOL UI_Button = false;
@@ -26,4 +28,6 @@ vector<int> Block = GUI_Variable.GUI_Block(30, 30, 300, "Test Block");//Block
 
 GUI_Variable.GUI_Checkbox(Block, 1, "Checkbox.", UI_Checkbox);
 GUI_Variable.GUI_Button(Block, 2, "Button", 90, UI_Button);
+Sleep(1);
+}
 ```
