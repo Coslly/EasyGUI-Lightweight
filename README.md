@@ -9,13 +9,13 @@ Lightweight GUI library for console programs
 # 🥰Showcase(example)
 ![image](https://github.com/Coslly/EasyGUI-Lightweight/blob/main/PAA.png?raw=true)
 # 😧How to use?
-### Initialization
+### - Initialization
 ```cpp
 //Initialize GUI variables
 EasyGUI::EasyGUI GUI_Variable;
 GUI_Variable.Window_Create(1000, 1000, L"Test Windows", true);
 ```
-### Add controls
+### - Add controls
 You need to add a control block.
 
 If you add the Window_Move() function inside the loop then you don't need to add the Sleep() function
@@ -53,7 +53,7 @@ while (1)
     }
 }
 ```
-### Function special class
+### - Function special class
 When the same function is executed, different classes need to be entered in the template. Of course you can create. :)
 ```cpp
 while (1)
