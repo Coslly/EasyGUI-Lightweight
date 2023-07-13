@@ -1,8 +1,6 @@
 # 🤖EasyGUI
 Lightweight GUI library for console programs
 
-
-
 Which projects use it?
 - [TaHack](https://github.com/Coslly/TaHack.git)
 # 😀Features
