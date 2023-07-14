@@ -51,10 +51,10 @@ while (1)
     static BOOL UI_Checkbox = false;
     static BOOL UI_Button = false;
 
-    GUI_Variable.GUI_BackGround();//BackGround
-
     if (!GUI_Variable.Window_Move())//MoveWindow Funtion
     {
+        GUI_Variable.GUI_BackGround();//BackGround
+
         vector<int> Block = GUI_Variable.GUI_Block(30, 30, 300, "Test Block");//Block
 
         GUI_Variable.GUI_Checkbox(Block, 1, "Checkbox", UI_Checkbox);
