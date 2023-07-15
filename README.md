@@ -111,4 +111,9 @@ while (1)
 }
 ```
 Finished Product
-![image]()
+
+![image](https://github.com/Coslly/EasyGUI-Lightweight/blob/main/Show/OverallCode1.png?raw=true)
+
+You can also invert colors!
+
+![image](https://github.com/Coslly/EasyGUI-Lightweight/blob/main/Show/OverallCode2.png?raw=true)
