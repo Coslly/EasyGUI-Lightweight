@@ -13,7 +13,7 @@ Which projects use it?
 - Simple
 - Can be modified at will.
 # 🥰Showcase(Example)
-[!image](https://github.com/Coslly/EasyGUI-Lightweight/blob/main/Show/ShowCase.png?raw=true)
+![image](https://github.com/Coslly/EasyGUI-Lightweight/blob/main/Show/ShowCase.png?raw=true)
 # 😧How to use it?(Cpp Code)
 ### - Initialization
 ```cpp
