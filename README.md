@@ -19,7 +19,7 @@ Which projects use it?
 ```cpp
 //Initialize GUI variables
 EasyGUI::EasyGUI GUI_Variable;
-GUI_Variable.Window_Create(500, 500, L"Test Windows", false);
+GUI_Variable.Window_Create(500, 500, "Test Windows", false);
 ```
 ### - Add controls
 You need to add a control block.
@@ -87,7 +87,7 @@ while (1)
 ### - Overall Code (Example Code)
 ```cpp
 EasyGUI::EasyGUI GUI_Variable;//Initialize GUI variables
-GUI_Variable.Window_Create(500, 300, L"Test Windows", false);
+GUI_Variable.Window_Create(500, 300, "Test Windows", false);
 while (1)
 {
     //Variable
