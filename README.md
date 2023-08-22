@@ -21,6 +21,11 @@ Which projects use it?
 EasyGUI::EasyGUI GUI_Variable;
 GUI_Variable.Window_Create(500, 500, "Test Windows", false);
 ```
+If you want to jump background and block steps
+```cpp
+EasyGUI::EasyGUI GUI_Variable;//Initialize GUI variables
+vector<int> Block = GUI_Variable.Initialization_Fast();
+```
 ### - Add controls
 You need to add a control block.
 
