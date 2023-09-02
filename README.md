@@ -92,27 +92,30 @@ while (1)
 ```
 ### - Overall Code (Example Code)
 ```cpp
-EasyGUI::EasyGUI GUI_Variable;//Initialize GUI variables
-GUI_Variable.Window_Create(500, 300, "Test Windows", false);
-while (1)
+int main()
 {
-    //Variable
-    static BOOL UI_Checkbox = false;
-    static int UI_Slider = 0;
-    static BOOL UI_Button = false;
-    if (!GUI_Variable.Window_Move())//MoveWindow Funtion
+    EasyGUI::EasyGUI GUI_Variable;//Initialize GUI variables
+    GUI_Variable.Window_Create(500, 300, "Test Windows", false);
+    while (1)
     {
-        //BackGround
-        GUI_Variable.GUI_BackGround();
+        //Variable
+        static BOOL UI_Checkbox = false;
+        static int UI_Slider = 0;
+        static BOOL UI_Button = false;
+        if (!GUI_Variable.Window_Move())//MoveWindow Funtion
+        {
+            //BackGround
+            GUI_Variable.GUI_BackGround();
 
-        vector<int> Block = GUI_Variable.GUI_Block(30, 30, 200, "Block");//Block
+            vector<int> Block = GUI_Variable.GUI_Block(30, 30, 200, "Block");//Block
 
-        GUI_Variable.GUI_Checkbox(Block, 1, "Checkbox", UI_Checkbox);
-        GUI_Variable.GUI_Slider<int, class GUI_Class_1>(Block, 2, "Slider", 0, 10, UI_Slider);
-        GUI_Variable.GUI_Button(Block, 3, "Button", 90, UI_Button);
+            GUI_Variable.GUI_Checkbox(Block, 1, "Checkbox", UI_Checkbox);
+            GUI_Variable.GUI_Slider<int, class GUI_Class_1>(Block, 2, "Slider", 0, 10, UI_Slider);
+            GUI_Variable.GUI_Button(Block, 3, "Button", 90, UI_Button);
 
-        //Draw
-        GUI_Variable.Draw_GUI();
+            //Draw
+            GUI_Variable.Draw_GUI();
+        }
     }
 }
 ```
