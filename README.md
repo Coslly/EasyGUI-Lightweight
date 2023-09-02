@@ -21,7 +21,7 @@ Which projects use it?
 EasyGUI::EasyGUI GUI_Variable;
 GUI_Variable.Window_Create(500, 500, "Test Windows", false);
 ```
-If you want to jump window and background and block steps
+If you want to jump window and background and block steps(Put in the loop)
 ```cpp
 //Initialize GUI variables
 static EasyGUI::EasyGUI GUI_Variable;
