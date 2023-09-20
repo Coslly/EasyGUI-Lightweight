@@ -6,15 +6,15 @@ Projects starting January 2023!
 
 Which projects use it?
 - [TaHack](https://github.com/Coslly/TaHack.git)
-# 😀Features
+## 😀Features
 - For people(beginner,student)
 - C++ worker
 - Fast
 - Simple
 - Can be modified at will.
-# 🥰Showcase(Example)
+## 🥰Showcase(Example)
 ![image](https://github.com/Coslly/EasyGUI-Lightweight/blob/main/Show/ShowCase.png?raw=true)
-# 😧How to use it?(Cpp Code)
+## 😧How to use it?(Cpp Code)
 ### - Initialization
 ```cpp
 //Initialize GUI variables
