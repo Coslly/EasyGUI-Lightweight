@@ -25,7 +25,7 @@ If you want to jump window and background and block steps(Put in the loop)
 ```cpp
 //Initialize GUI variables
 static EasyGUI::EasyGUI GUI_Variable;
-vector<int> Block = GUI_Variable.Initialization_Fast();
+const auto Block = GUI_Variable.Initialization_Fast();
 ```
 ### - Add controls
 You need to add a control block.
@@ -40,7 +40,7 @@ while (1)
 
     GUI_Variable.GUI_BackGround();//BackGround
 
-    vector<int> Block = GUI_Variable.GUI_Block(30, 30, 300, "Test Block");//Block
+    const auto Block = GUI_Variable.GUI_Block(30, 30, 300, "Test Block");//Block
 
     GUI_Variable.GUI_Checkbox(Block, 1, "Checkbox", UI_Checkbox);
     GUI_Variable.GUI_Button(Block, 2, "Button", 90, UI_Button);
@@ -61,7 +61,7 @@ while (1)
     {
         GUI_Variable.GUI_BackGround();//BackGround
 
-        vector<int> Block = GUI_Variable.GUI_Block(30, 30, 300, "Test Block");//Block
+        const auto Block = GUI_Variable.GUI_Block(30, 30, 300, "Test Block");//Block
 
         GUI_Variable.GUI_Checkbox(Block, 1, "Checkbox", UI_Checkbox);
         GUI_Variable.GUI_Button(Block, 2, "Button", 90, UI_Button);
@@ -81,7 +81,7 @@ while (1)
 
     GUI_Variable.GUI_BackGround();//BackGround
 
-    vector<int> Block = GUI_Variable.GUI_Block(30, 30, 300, "Test Block");//Block
+    const auto Block = GUI_Variable.GUI_Block(30, 30, 300, "Test Block");//Block
 
     GUI_Variable.GUI_Slider<int, class GUI_Class_1>(Block, 1, "Slider 1", 0, 10, UI_Slider_1);
     GUI_Variable.GUI_Slider<int, class GUI_Class_2>(Block, 1, "Slider 2", 0, 10, UI_Slider_2);
@@ -107,7 +107,7 @@ int main()
             //BackGround
             GUI_Variable.GUI_BackGround();
 
-            vector<int> Block = GUI_Variable.GUI_Block(30, 30, 200, "Block");//Block
+            const auto Block = GUI_Variable.GUI_Block(30, 30, 200, "Block");//Block
 
             GUI_Variable.GUI_Checkbox(Block, 1, "Checkbox", UI_Checkbox);
             GUI_Variable.GUI_Slider<int, class GUI_Class_1>(Block, 2, "Slider", 0, 10, UI_Slider);
