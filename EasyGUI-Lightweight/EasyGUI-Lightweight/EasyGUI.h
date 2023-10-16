@@ -800,7 +800,7 @@ namespace EasyGUI
         }
         //---------------------------------------------------------------------------------------------------------------------------------------------------------
         template<class ValueClass, class CreateClassName>
-        ValueClass GUI_Slider(vector<int>BlockPos, short LineRow, string Text, ValueClass StartValue, ValueClass EndValue, ValueClass& m_SliderValue, vector<int> TextColor = { 200,200,200 }) noexcept//滑条
+        ValueClass GUI_Slider(vector<int>BlockPos, short LineRow, string Text, ValueClass StartValue, ValueClass EndValue, ValueClass& m_SliderValue, string UnitString = "", vector<int> TextColor = { 200,200,200 }) noexcept//滑条
         {
             if (BlockPos[0] == 0 && BlockPos[1] == 0)return 0;//当无block则不进行绘制
             const BOOL DetectMousePos = In_MouseEventJudgment(BlockPos[0] + 55, BlockPos[1] + (6 + 30 * LineRow), 230, 5);//窗口检测
@@ -839,7 +839,7 @@ namespace EasyGUI
             In_DrawGradientRect(BlockPos[0] + 55, BlockPos[1] + (6 + 30 * LineRow), In_Animation<CreateClassName>(SliderPos), 5, Global_EasyGUIColor, { Global_EasyGUIColor[0] / 5,Global_EasyGUIColor[1] / 5,Global_EasyGUIColor[2] / 5 }, true);//滑条
             In_DrawString(BlockPos[0] + 55 + 1, BlockPos[1] - 16 + (6 + 30 * LineRow) + 1, Text, { 0,0,0 }, Global_EasyGUIFont, Global_EasyGUIFontSize);
             In_DrawString(BlockPos[0] + 55, BlockPos[1] - 16 + (6 + 30 * LineRow), Text, TextColor, Global_EasyGUIFont, Global_EasyGUIFontSize);
-            In_DrawString_Simple(BlockPos[0] + 230 + 10 + 55, BlockPos[1] - 4 + (6 + 30 * LineRow), ss.str(), { 150,150,150 });//返回值绘制
+            In_DrawString_Simple(BlockPos[0] + 230 + 10 + 55, BlockPos[1] - 4 + (6 + 30 * LineRow), ss.str() + UnitString, { 150,150,150 });//返回值绘制
             return m_SliderValue;
         }
         //---------------------------------------------------------------------------------------------------------------------------------------------------------
