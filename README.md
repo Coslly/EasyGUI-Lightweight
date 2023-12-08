@@ -15,6 +15,11 @@ Which projects use it?
 ## 🥰Showcase (Example)
 ![image](https://github.com/Coslly/EasyGUI-Lightweight/blob/main/Show/ShowCase.png?raw=true)
 ## 😧How to use it?
+### - Constitute
+EasyGUI is a fast and lightweight GUI library written in C++. The core drawing library is used for original GDI (fast and lightweight) and is composed of the most basic key judgment system.
+
+Core file:`EasyGUI.h`
+Example file:`Main.cpp`
 ### - Initialization
 ```cpp
 //Initialize GUI variables
