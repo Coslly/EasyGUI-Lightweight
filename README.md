@@ -12,9 +12,9 @@ Which projects use it?
 - Fast
 - Simple
 - Can be modified at will.
-## 🥰Showcase(Example)
+## 🥰Showcase (Example)
 ![image](https://github.com/Coslly/EasyGUI-Lightweight/blob/main/Show/ShowCase.png?raw=true)
-## 😧How to use it?(Cpp Code)
+## 😧How to use it?
 ### - Initialization
 ```cpp
 //Initialize GUI variables
