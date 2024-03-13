@@ -7,7 +7,7 @@
 #include <sstream>
 #pragma comment(lib, "MSIMG32.LIB")
 using namespace std;
-namespace EasyGUI//EasyGUI Release[2024-02-01 22:40]
+namespace EasyGUI//EasyGUI Release[2024-03-13 17:20]
 {
     /* Simple example
     int main()
@@ -80,42 +80,43 @@ namespace EasyGUI//EasyGUI Release[2024-02-01 22:40]
     struct Vector2//用来储存坐标数据 XY
     {
         constexpr Vector2(const int x = 0, const int y = 0) noexcept :x(x), y(y) { }
-        constexpr const Vector2 operator-(const Vector2 other) const noexcept
-        {
-            return Vector2{ x - other.x, y - other.y };
-        }
         constexpr const Vector2 operator+(const Vector2 other) const noexcept
         {
             return Vector2{ x + other.x, y + other.y };
         }
-        constexpr const Vector2 operator/(const int factor) const noexcept
+        constexpr const Vector2 operator-(const Vector2 other) const noexcept
         {
-            return Vector2{ x / factor, y / factor };
+            return Vector2{ x - other.x, y - other.y };
         }
         constexpr const Vector2 operator*(const int factor) const noexcept
         {
             return Vector2{ x * factor, y * factor };
         }
+        constexpr const Vector2 operator/(const int factor) const noexcept
+        {
+            return Vector2{ x / factor, y / factor };
+        }
+        constexpr const bool IsZero() const noexcept { return x == 0 && y == 0; }
         int x, y;
     };
     struct Vector3//用来储存坐标数据 XYZ
     {
         constexpr Vector3(const float x = 0, const float y = 0, const float z = 0) noexcept :x(x), y(y), z(z) { }
-        constexpr const Vector3 operator-(const Vector3 other) const noexcept
-        {
-            return Vector3{ x - other.x, y - other.y, z - other.z };
-        }
         constexpr const Vector3 operator+(const Vector3 other) const noexcept
         {
             return Vector3{ x + other.x, y + other.y, z + other.z };
         }
-        constexpr const Vector3 operator/(const float factor) const noexcept
+        constexpr const Vector3 operator-(const Vector3 other) const noexcept
         {
-            return Vector3{ x / factor, y / factor, z / factor };
+            return Vector3{ x - other.x, y - other.y, z - other.z };
         }
         constexpr const Vector3 operator*(const float factor) const noexcept
         {
             return Vector3{ x * factor, y * factor, z * factor };
+        }
+        constexpr const Vector3 operator/(const float factor) const noexcept
+        {
+            return Vector3{ x / factor, y / factor, z / factor };
         }
         constexpr const Vector3 ToAngle() const noexcept
         {
@@ -126,22 +127,32 @@ namespace EasyGUI//EasyGUI Release[2024-02-01 22:40]
     };
     struct Vector4//用来储存颜色数据 RGBA
     {
-        constexpr Vector4(const int r = 0, const int g = 0, const int b = 0, const int a = 0) noexcept :r(r), g(g), b(b), a(a) { }
+        constexpr Vector4(const int r = 0, const int g = 0, const int b = 0, const int a = 255) noexcept :r(r), g(g), b(b), a(a) {}
+        constexpr const Vector4 operator+(const Vector4 other) const noexcept
+        {
+            return Vector4{ r + other.r, g + other.g, b + other.b, a };
+        }
         constexpr const Vector4 operator-(const Vector4 other) const noexcept
         {
             return Vector4{ r - other.r, g - other.g, b - other.b, a };
         }
-        constexpr const Vector4 operator+(const Vector4 other) const noexcept
+        constexpr const Vector4 operator*(const int factor) const noexcept
         {
-            return Vector4{ r + other.r, g + other.g, b + other.b, a };
+            return Vector4{ r * factor, g * factor, b * factor, a };
         }
         constexpr const Vector4 operator/(const int factor) const noexcept
         {
             return Vector4{ r / factor, g / factor, b / factor, a };
         }
-        constexpr const Vector4 operator*(const int factor) const noexcept
+        constexpr const Vector4 D_Alpha(const int Alpha, const int Limit_s = 0) const noexcept { if (Alpha <= Limit_s)return { r,g,b,Limit_s }; else return { r,g,b,Alpha }; }
+        constexpr const Vector4 Re_Col() const noexcept
         {
-            return Vector4{ r * factor, g * factor, b * factor, a };
+            Vector4 Color_Var = Vector4{ r, g , b , a };
+            if (Color_Var.r <= 0)Color_Var.r = 0; else if (Color_Var.r >= 255)Color_Var.r = 255;
+            if (Color_Var.g <= 0)Color_Var.g = 0; else if (Color_Var.g >= 255)Color_Var.g = 255;
+            if (Color_Var.b <= 0)Color_Var.b = 0; else if (Color_Var.b >= 255)Color_Var.b = 255;
+            if (Color_Var.a <= 0)Color_Var.a = 0; else if (Color_Var.a >= 255)Color_Var.a = 255;
+            return Color_Var;
         }
         int r, g, b, a;
     };
@@ -241,6 +252,7 @@ namespace EasyGUI//EasyGUI Release[2024-02-01 22:40]
             DeleteObject(FontPen);
             delete[] wide_text;
         }
+        //---------------------------------------------------------------------
         void In_DrawString_Simple(int X, int Y, string String, Vector4 TextColor = { 255,255,255 }) noexcept//绘制简单文字 (方便制作GUI)
         {
             const HDC StringHdc = EasyGUI_DrawHDC;
@@ -415,12 +427,26 @@ namespace EasyGUI//EasyGUI Release[2024-02-01 22:40]
         }
         //---------------------------------------------------------------------
         template<class A>//防止冲突
-        float In_Animation(float Value, float Speed = 1.3) noexcept//快到慢动画
+        float In_Animation(float Value, float Speed = 1.3, Vector2 Limit = { 0,0 }) noexcept//快到慢动画
         {
             static float ReturnValue = Value;
             if (Value > ReturnValue)ReturnValue += (Value - ReturnValue) / Speed;
             else if (Value < ReturnValue)ReturnValue -= (ReturnValue - Value) / Speed;
+            if (Limit.x != 0 || Limit.y != 0)//限制动画输出值 (默认值(最小值,最大值)0,0为不限制)
+            {
+                if (Limit.x > ReturnValue)ReturnValue = Limit.x;
+                else if (Limit.y < ReturnValue)ReturnValue = Limit.y;
+            }
             return ReturnValue;
+        }
+        //---------------------------------------------------------------------
+        template<class A>//防止同函数同步
+        BOOL In_TickSleep(int Time_MS) noexcept//不受线程影响的Sleep函数
+        {
+            const long Tick = GetTickCount64();
+            static long OldTick = Tick;
+            if (Tick - OldTick >= Time_MS) { OldTick = Tick; return true; }//当达到一定数值返回并且重写变量
+            else return false;
         }
         //---------------------------------------------------------------------
     public:
@@ -637,8 +663,8 @@ namespace EasyGUI//EasyGUI Release[2024-02-01 22:40]
                 else if (防止脱离 && GetAsyncKeyState(VK_LBUTTON))
                 {
                     MoveWindow(EasyGUI_WindowHWND, EasyGUI_MousePos.x - OldX, EasyGUI_MousePos.y - OldY, EasyGUI_WindowPos.right - EasyGUI_WindowPos.left, EasyGUI_WindowPos.bottom - EasyGUI_WindowPos.top, TRUE);//移动窗口到鼠标坐标
-                    this_thread::sleep_for(chrono::nanoseconds(20));//降低CPU占用 纳秒单位等待函数
                     Mouse_Block_ = true;
+                    if (In_TickSleep<class CLASS_EasyGUI_WindowMove_Stop_FPS>(200))return false;//定时返回false (用来刷新面板)
                     return true;
                 }
                 else {
@@ -903,10 +929,7 @@ namespace EasyGUI//EasyGUI Release[2024-02-01 22:40]
                     m_SliderValue = ((EasyGUI_MousePos.x - BlockPos.x - 54 - EasyGUI_WindowPos.left) * (EndValue - StartValue) / 230) + StartValue;
                     Mouse_Block_ = true; Mouse_Slider_ = true;
                 }
-                else if (!(GetAsyncKeyState(VK_LBUTTON) & 0x8000))
-                {
-                    OutSide = false; Mouse_Slider_ = false;
-                }
+                else if (!(GetAsyncKeyState(VK_LBUTTON) & 0x8000)) { OutSide = false; Mouse_Slider_ = false; }
             }
             int SliderPos = (float)(m_SliderValue - StartValue) / (float)(EndValue - StartValue) * 230;
             if (SliderPos >= 230)SliderPos = 230; else if (SliderPos <= 0) SliderPos = 0;
@@ -915,7 +938,7 @@ namespace EasyGUI//EasyGUI Release[2024-02-01 22:40]
             In_DrawRect(BlockPos.x - 1 + 55, BlockPos.y - 1 + (6 + 30 * LineRow), 230 + 2, 7, { 0,0,0 });//黑色外边框
             if (DetectMousePos || OutSide)In_DrawGradientRect(BlockPos.x + 55, BlockPos.y + (6 + 30 * LineRow), 230, 5, { 30,30,30 }, Global_EasyGUIColor / 4, true);//滑条背景
             else In_DrawGradientRect(BlockPos.x + 55, BlockPos.y + (6 + 30 * LineRow), 230, 5, { 20,20,20 }, Global_EasyGUIColor / 5, true);
-            In_DrawGradientRect(BlockPos.x + 55, BlockPos.y + (6 + 30 * LineRow), In_Animation<CreateClassName>(SliderPos), 5, Global_EasyGUIColor, Global_EasyGUIColor / 5, true);//滑条
+            In_DrawGradientRect(BlockPos.x + 55, BlockPos.y + (6 + 30 * LineRow), In_Animation<CreateClassName>(SliderPos, 1.1, { 0,230 }), 5, Global_EasyGUIColor, Global_EasyGUIColor / 5, true);//滑条 (动画0.8果冻效果)
             In_DrawString(BlockPos.x + 55 + 1, BlockPos.y - 16 + (6 + 30 * LineRow) + 1, Text, { 0,0,0 }, Global_EasyGUIFont, Global_EasyGUIFontSize);
             In_DrawString(BlockPos.x + 55, BlockPos.y - 16 + (6 + 30 * LineRow), Text, TextColor, Global_EasyGUIFont, Global_EasyGUIFontSize);
             In_DrawString_Simple(BlockPos.x + 230 + 10 + 55, BlockPos.y - 4 + (6 + 30 * LineRow), ss.str() + UnitString, { 150,150,150 });//返回值绘制
@@ -1119,7 +1142,11 @@ namespace EasyGUI//EasyGUI Release[2024-02-01 22:40]
                 }
                 else {
                     In_DrawString(BlockPos.x + 65 + 1, BlockPos.y + StartLineRow * 30 + i * 25 - 1 + 1, LineString[i], { 0,0,0 }, Global_EasyGUIFont, Global_EasyGUIFontSize);
-                    if (DetectMousePos)In_DrawString(BlockPos.x + 65, BlockPos.y + StartLineRow * 30 + i * 25 - 1, LineString[i], { 255,255,255 }, Global_EasyGUIFont, Global_EasyGUIFontSize);
+                    if (DetectMousePos)//当光标选择时视觉反馈 (在上方时)
+                    {
+                        In_DrawGradientRect(BlockPos.x + 54, BlockPos.y + StartLineRow * 30 + i * 25 - 5, 232, 20, Global_EasyGUIColor / 6, { 15,15,15 });
+                        In_DrawString(BlockPos.x + 65, BlockPos.y + StartLineRow * 30 + i * 25 - 1, LineString[i], { 255,255,255 }, Global_EasyGUIFont, Global_EasyGUIFontSize);
+                    }
                     else In_DrawString(BlockPos.x + 65, BlockPos.y + StartLineRow * 30 + i * 25 - 1, LineString[i], { 200,200,200 }, Global_EasyGUIFont, Global_EasyGUIFontSize);
                 }
             }
