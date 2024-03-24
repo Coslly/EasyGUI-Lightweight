@@ -5,11 +5,12 @@
 #include <thread>
 #include <iomanip>
 #include <sstream>
+#include <algorithm>
 #pragma comment(lib, "MSIMG32.LIB")
 using namespace std;
-namespace EasyGUI//EasyGUI Release[2024-03-13 17:20]
+namespace EasyGUI//EasyGUI Release[2024-03-24 19:30]
 {
-    /* Simple example
+    /*
     int main()
     {
         ShowWindow(GetConsoleWindow(), true);//Show Console Window
@@ -29,19 +30,20 @@ namespace EasyGUI//EasyGUI Release[2024-03-13 17:20]
             static EasyGUI::Vector4 UI_ColorSelector = { 255,255,255 };
             static EasyGUI::Vector3 UI_PosSelector = { 0.23,100,1000 };
             static int UI_PanelSelector = 0;
+            static string UI_InputText = "Input text";
             static int UI_List = 0;
             EasyGUI::EasyGUI_IO GUI_IO = GUI_Variable.Get_IO();//Get Global Input/Output Value
-            if (!GUI_Variable.Window_Move())//MoveWindow Funtion (You must add!! cause it have  MessageLoop)
+            if (!GUI_Variable.Window_Move())//MoveWindow Funtion (You must add!! cause it have MessageLoop)
             {
                 GUI_Variable.GUI_BackGround();//BackGround
                 GUI_Variable.GUI_Block_Panel(30, 30, 100, 300, "Panel", { "Panel 1","Panel 2","Panel 3" }, UI_PanelSelector);
-                if (UI_PanelSelector == 0)//Panel1 Screen
+                if (UI_PanelSelector == 0)//Panel 1 Screen
                 {
                     const auto Block = GUI_Variable.GUI_Block(160, 30, 300, "Block");//Block
                     GUI_Variable.GUI_Checkbox(Block, 1, "This is a Checkbox.", UI_Checkbox);
-                    GUI_Variable.GUI_KeySelector<class A_1>(Block, 1, UI_KeySelector);
-                    GUI_Variable.GUI_Slider<int, class A_2>(Block, 2, "Slider int", 0, 10, UI_Slider_int);
-                    GUI_Variable.GUI_Slider<float, class A_3>(Block, 3, "Slider float", 0, 10, UI_Slider_float);
+                    GUI_Variable.GUI_KeySelector<class CALSS_EasyGUI_1>(Block, 1, UI_KeySelector);
+                    GUI_Variable.GUI_Slider<int, class CALSS_EasyGUI_2>(Block, 2, "Slider int", 0, 10, UI_Slider_int);
+                    GUI_Variable.GUI_Slider<float, class CALSS_EasyGUI_3>(Block, 3, "Slider float", 0, 10, UI_Slider_float);
                     GUI_Variable.GUI_Button(Block, 4, "Button", UI_Button);
                     static auto ButtonClick = 0;
                     if (UI_Button || UI_Button_Small)ButtonClick++;
@@ -56,10 +58,11 @@ namespace EasyGUI//EasyGUI Release[2024-03-13 17:20]
                     GUI_Variable.GUI_Text(Block, 9, "FPS: " + to_string(GUI_IO.DrawFPS));
                     GUI_Variable.GUI_Tips(Block, 1, "Some Tips.");
                 }
-                else if (UI_PanelSelector == 1)//Panel2 Screen
+                else if (UI_PanelSelector == 1)//Panel 2 Screen
                 {
                     const auto Block = GUI_Variable.GUI_Block(160, 30, 300, "Block");//Block
-                    GUI_Variable.GUI_List(Block, 1, { "Hello","C++","Java","CS","Windows" }, UI_List);
+                    GUI_Variable.GUI_InputText<class CALSS_EasyGUI_4>(Block, 1, UI_InputText);
+                    GUI_Variable.GUI_List(Block, 2, { "Hello","C++","Java","CS","Windows" }, UI_List);
                 }
                 GUI_Variable.Draw_GUI(UI_InvertScreenColor);
             }
@@ -67,14 +70,15 @@ namespace EasyGUI//EasyGUI Release[2024-03-13 17:20]
     }
     */
     //---------------------------------------------------------------------------------------------------------------------------------------------------------
-    LRESULT WINAPI WndProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp) noexcept//消息循环(用于解决窗口未响应问题)
+    LRESULT WINAPI WndProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp) noexcept//消息循环(用于解决窗口未响应问题 接收窗口消息)
     {
         switch (msg)
         {
         case WM_ERASEBKGND:return TRUE; break;
         case WM_PAINT:return TRUE; break;//一直重绘
+        case WM_CLOSE:exit(0); break;//接收到关闭窗口事件时返回全部线程
         }
-        return DefWindowProc(hwnd, msg, wp, lp);  //定义回调函数的返回值
+        return DefWindowProc(hwnd, msg, wp, lp);//定义回调函数的返回值
     }
     //---------------------------------------------------------------------------------------------------------------------------------------------------------
     struct Vector2//用来储存坐标数据 XY
@@ -627,7 +631,7 @@ namespace EasyGUI//EasyGUI Release[2024-03-13 17:20]
         {
             SetWindowTextA(EasyGUI_WindowHWND, WindowTitle.c_str());//修改窗口标题
         }
-        const char* Window_GetTitle() noexcept//获取GUI窗口标题
+        string Window_GetTitle() noexcept//获取GUI窗口标题
         {
             CHAR pszMem[MAX_PATH] = { 0 }; GetWindowTextA(EasyGUI_WindowHWND, pszMem, GetWindowTextLength(EasyGUI_WindowHWND) + 1);
             return pszMem;
@@ -1133,7 +1137,7 @@ namespace EasyGUI//EasyGUI Release[2024-03-13 17:20]
             {
                 if (i >= LimitLine)continue;//限制行数
                 const BOOL DetectMousePos = In_MouseEventJudgment(BlockPos.x + 54, BlockPos.y + StartLineRow * 30 + i * 25 - 5, 232, 20);//光标检测范围
-                if (GetForegroundWindow() == EasyGUI_WindowHWND && !Mouse_Slider_ && DetectMousePos && GetAsyncKeyState(VK_LBUTTON) & 0x8000) { m_InLine = i; mouse_event(MOUSEEVENTF_LEFTUP, 0, 0, 0, 0); }//赋值选择
+                if (GetForegroundWindow() == EasyGUI_WindowHWND && !Mouse_Slider_ && DetectMousePos && (GetAsyncKeyState(VK_LBUTTON) & 0x8000 || GetAsyncKeyState(VK_RBUTTON) & 0x8000)) { m_InLine = i; mouse_event(MOUSEEVENTF_LEFTUP, 0, 0, 0, 0); mouse_event(MOUSEEVENTF_RIGHTUP, 0, 0, 0, 0);}//赋值选择
                 if (m_InLine == i)
                 {
                     In_DrawGradientRect(BlockPos.x + 54, BlockPos.y + StartLineRow * 30 + i * 25 - 5, 232, 20, Global_EasyGUIColor / 6, { 15,15,15 });
@@ -1151,6 +1155,105 @@ namespace EasyGUI//EasyGUI Release[2024-03-13 17:20]
                 }
             }
             return m_InLine;
+        }
+        //---------------------------------------------------------------------------------------------------------------------------------------------------------
+        template<class CreateClassName>
+        string GUI_InputText(Vector2 BlockPos, short LineRow, string& m_String) noexcept//字符串输入框 (英文数字 不支持UTF-8 最多30个字符)
+        {
+            if (BlockPos.x == 0 && BlockPos.y == 0)return 0;//当无block则不进行绘制
+            const BOOL DetectMousePos = In_MouseEventJudgment(BlockPos.x + 55, BlockPos.y + (30 * LineRow) - 9, 230, 25);//窗口检测机制
+            static BOOL IsInput = false;//判断是否在输入变量
+            string DrawString = m_String;//绘制字符串
+            if (GetForegroundWindow() == EasyGUI_WindowHWND && !Mouse_Slider_)//当最前端窗口为GUI窗口接收输入框事件
+            {
+                if (!IsInput && (GetAsyncKeyState(VK_LBUTTON) & 0x8000 || GetAsyncKeyState(VK_RBUTTON) & 0x8000) && DetectMousePos)//进入输入状态
+                {
+                    IsInput = true;
+                    mouse_event(MOUSEEVENTF_LEFTUP, 0, 0, 0, 0);
+                    mouse_event(MOUSEEVENTF_RIGHTUP, 0, 0, 0, 0);
+                }
+                else if (IsInput)//在输入状态时
+                {
+                    string PressedKey = "";//按键记录变量
+                    for (int i = 0x10; i < 0xFE; ++i)//VK键码遍历 (检测按下了什么键)
+                    {
+                        if (GetAsyncKeyState(i) & 0x8000)
+                        {
+                            switch (i)//相比if函数执行更快
+                            {
+                            case 0x20:PressedKey = " "; break;
+                            case 0x30:PressedKey = "0"; break;
+                            case 0x31:PressedKey = "1"; break;
+                            case 0x32:PressedKey = "2"; break;
+                            case 0x33:PressedKey = "3"; break;
+                            case 0x34:PressedKey = "4"; break;
+                            case 0x35:PressedKey = "5"; break;
+                            case 0x36:PressedKey = "6"; break;
+                            case 0x37:PressedKey = "7"; break;
+                            case 0x38:PressedKey = "8"; break;
+                            case 0x39:PressedKey = "9"; break;
+                            case 0x41:PressedKey = "a"; break;
+                            case 0x42:PressedKey = "b"; break;
+                            case 0x43:PressedKey = "c"; break;
+                            case 0x44:PressedKey = "d"; break;
+                            case 0x45:PressedKey = "e"; break;
+                            case 0x46:PressedKey = "f"; break;
+                            case 0x47:PressedKey = "g"; break;
+                            case 0x48:PressedKey = "h"; break;
+                            case 0x49:PressedKey = "i"; break;
+                            case 0x4A:PressedKey = "j"; break;
+                            case 0x4B:PressedKey = "k"; break;
+                            case 0x4C:PressedKey = "l"; break;
+                            case 0x4D:PressedKey = "m"; break;
+                            case 0x4E:PressedKey = "n"; break;
+                            case 0x4F:PressedKey = "o"; break;
+                            case 0x50:PressedKey = "p"; break;
+                            case 0x51:PressedKey = "q"; break;
+                            case 0x52:PressedKey = "r"; break;
+                            case 0x53:PressedKey = "s"; break;
+                            case 0x54:PressedKey = "t"; break;
+                            case 0x55:PressedKey = "u"; break;
+                            case 0x56:PressedKey = "v"; break;
+                            case 0x57:PressedKey = "w"; break;
+                            case 0x58:PressedKey = "x"; break;
+                            case 0x59:PressedKey = "y"; break;
+                            case 0x5A:PressedKey = "z"; break;
+                            case 0xBE:PressedKey = "."; break;
+                            case 0xBF:PressedKey = "/"; break;
+                            }
+                            if (GetKeyState(0x14))transform(PressedKey.begin(), PressedKey.end(), PressedKey.begin(), toupper);//转换大写 (仅限CAPSLOCK)
+                            m_String += PressedKey;//返回按下
+                            if (m_String.size() > 30)m_String.erase(m_String.end() - 1);//防止过量 (绘制在非绘制区域)
+                            keybd_event(i, 0, KEYEVENTF_KEYUP, 0);//释放按键
+                        }
+                    }
+                    if (GetAsyncKeyState(VK_BACK) & 0x8000 && m_String.size() != 0)//擦除最后一个字符
+                    {
+                        m_String.erase(m_String.end() - 1);
+                        keybd_event(VK_BACK, 0, KEYEVENTF_KEYUP, 0);
+                    }
+                    DrawString += "_";//输入标识
+                    if (!DetectMousePos && (GetAsyncKeyState(VK_LBUTTON) & 0x8000 || GetAsyncKeyState(VK_RBUTTON) & 0x8000))//鼠标解除输入状态
+                    {
+                        IsInput = false;
+                        mouse_event(MOUSEEVENTF_LEFTUP, 0, 0, 0, 0);
+                        mouse_event(MOUSEEVENTF_RIGHTUP, 0, 0, 0, 0);
+                    }
+                    if (GetAsyncKeyState(VK_RETURN) & 0x8000 || GetAsyncKeyState(VK_ESCAPE) & 0x8000)//按键解除输入状态
+                    {
+                        IsInput = false;
+                        keybd_event(VK_RETURN, 0, KEYEVENTF_KEYUP, 0);
+                        keybd_event(VK_ESCAPE, 0, KEYEVENTF_KEYUP, 0);
+                    }
+                }
+            }
+            In_DrawRect(BlockPos.x + 53, BlockPos.y - 2 + (30 * LineRow) - 7, 234, 27, { 0,0,0 });
+            In_DrawRect(BlockPos.x + 54, BlockPos.y - 1 + (30 * LineRow) - 7, 232, 25, { 60,60,60 });
+            if (DetectMousePos || IsInput)In_DrawRect(BlockPos.x + 55, BlockPos.y + (30 * LineRow) - 7, 230, 23, { 20,20,20 });
+            else In_DrawRect(BlockPos.x + 55, BlockPos.y + (30 * LineRow) - 7, 230, 23, { 10,10,10 });
+            In_DrawString(BlockPos.x + 55 + 8 + 1, BlockPos.y + 6 + (30 * LineRow) - 8 +1, DrawString, { 0,0,0 }, Global_EasyGUIFont, Global_EasyGUIFontSize);
+            In_DrawString(BlockPos.x + 55 + 8, BlockPos.y + 6 + (30 * LineRow) - 8, DrawString, { 200,200,200 }, Global_EasyGUIFont, Global_EasyGUIFontSize);
+            return m_String;
         }
         //---------------------------------------------------------------------------------------------------------------------------------------------------------
     };
