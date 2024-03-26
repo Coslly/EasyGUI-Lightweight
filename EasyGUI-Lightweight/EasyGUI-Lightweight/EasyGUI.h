@@ -8,7 +8,7 @@
 #include <algorithm>
 #pragma comment(lib, "MSIMG32.LIB")
 using namespace std;
-namespace EasyGUI//EasyGUI Release[2024-03-24 19:30]
+namespace EasyGUI//EasyGUI Release[2024-03-26 22:00]
 {
     /*
     int main()
@@ -35,12 +35,12 @@ namespace EasyGUI//EasyGUI Release[2024-03-24 19:30]
             EasyGUI::EasyGUI_IO GUI_IO = GUI_Variable.Get_IO();//Get Global Input/Output Value
             if (!GUI_Variable.Window_Move())//MoveWindow Funtion (You must add!! cause it have MessageLoop)
             {
-                GUI_Variable.GUI_BackGround();//BackGround
+                GUI_Variable.GUI_BackGround(true);//BackGround
                 GUI_Variable.GUI_Block_Panel(30, 30, 100, 300, "Panel", { "Panel 1","Panel 2","Panel 3" }, UI_PanelSelector);
                 if (UI_PanelSelector == 0)//Panel 1 Screen
                 {
                     const auto Block = GUI_Variable.GUI_Block(160, 30, 300, "Block");//Block
-                    GUI_Variable.GUI_Checkbox(Block, 1, "This is a Checkbox.", UI_Checkbox);
+                    GUI_Variable.GUI_Checkbox(Block, 1, "This is a Checkbox", UI_Checkbox);
                     GUI_Variable.GUI_KeySelector<class CALSS_EasyGUI_1>(Block, 1, UI_KeySelector);
                     GUI_Variable.GUI_Slider<int, class CALSS_EasyGUI_2>(Block, 2, "Slider int", 0, 10, UI_Slider_int);
                     GUI_Variable.GUI_Slider<float, class CALSS_EasyGUI_3>(Block, 3, "Slider float", 0, 10, UI_Slider_float);
@@ -52,11 +52,11 @@ namespace EasyGUI//EasyGUI Release[2024-03-24 19:30]
                     GUI_Variable.GUI_Text(Block, 7, "Main color");
                     GUI_Variable.GUI_ColorSelector(Block, 7, UI_ColorSelector);
                     GUI_Variable.Global_Set_EasyGUI_Color(UI_ColorSelector);
-                    GUI_Variable.GUI_Text(Block, 8, "PosSelector");
+                    GUI_Variable.GUI_Text(Block, 8, "Pos selector");
                     GUI_Variable.GUI_PosSelector(Block, 8, UI_PosSelector);
                     GUI_Variable.GUI_Button_Small(Block, 2, UI_Button_Small);
                     GUI_Variable.GUI_Text(Block, 9, "FPS: " + to_string(GUI_IO.DrawFPS));
-                    GUI_Variable.GUI_Tips(Block, 1, "Some Tips.");
+                    GUI_Variable.GUI_Tips(Block, 1, "Some tips");
                 }
                 else if (UI_PanelSelector == 1)//Panel 2 Screen
                 {
@@ -276,158 +276,24 @@ namespace EasyGUI//EasyGUI Release[2024-03-24 19:30]
             DeleteObject(FontPen);
         }
         //---------------------------------------------------------------------
-        string In_VKCode_to_String(int VK_code) noexcept//通过VK键码获取按键名称
-        {
-            switch (VK_code)
-            {
-            case 0x01: return "[M1]";//鼠标左键
-            case 0x02: return "[M2]";//鼠标右键
-            case 0x03: return "[CAN]";//鼠标中断处理
-            case 0x04: return "[M3]";//鼠标中键
-            case 0x05: return "[M4]";//鼠标侧键下
-            case 0x06: return "[M5]";//鼠标侧键上
-            case 0x07: return "[NONE]";
-            case 0x08: return "[BACK]";
-            case 0x09: return "[TAB]";
-            case 0x0C: return "[CLE]";
-            case 0x0D: return "[ENT]";
-            case 0x10: return "[SHF]";
-            case 0x11: return "[CLR]";
-            case 0x12: return "[ALT]";
-            case 0x13: return "[PAU]";
-            case 0x14: return "[CAP]";
-            case 0x15: return "[KAN]";
-            case 0x16: return "[KAN]";
-            case 0x17: return "[JUN]";
-            case 0x18: return "[FIN]";
-            case 0x19: return "[HAN]";
-            case 0x1B: return "[ESC]";
-            case 0x1C: return "[CON]";
-            case 0x1D: return "[NON]";
-            case 0x1E: return "[ACC]";
-            case 0x1F: return "[MOD]";
-            case 0x20: return "[SPA]";
-            case 0x21: return "[PRI]";
-            case 0x22: return "[NEXT]";
-            case 0x23: return "[END]";
-            case 0x24: return "[HOME]";
-            case 0x25: return "[LEFT]";
-            case 0x26: return "[UP]";
-            case 0x27: return "[RIGT]";
-            case 0x28: return "[DOWN]";
-            case 0x29: return "[SEL]";
-            case 0x2A: return "[PRI]";
-            case 0x2B: return "[EXE]";
-            case 0x2C: return "[SNAP]";
-            case 0x2D: return "[INS]";
-            case 0x2E: return "[DEL]";
-            case 0x2F: return "[HELP]";
-            case 0x30: return "[0]";
-            case 0x31: return "[1]";
-            case 0x32: return "[2]";
-            case 0x33: return "[3]";
-            case 0x34: return "[4]";
-            case 0x35: return "[5]";
-            case 0x36: return "[6]";
-            case 0x37: return "[7]";
-            case 0x38: return "[8]";
-            case 0x39: return "[9]";
-            case 0x41: return "[A]";
-            case 0x42: return "[B]";
-            case 0x43: return "[C]";
-            case 0x44: return "[D]";
-            case 0x45: return "[E]";
-            case 0x46: return "[F]";
-            case 0x47: return "[G]";
-            case 0x48: return "[H]";
-            case 0x49: return "[I]";
-            case 0x4A: return "[J]";
-            case 0x4B: return "[K]";
-            case 0x4C: return "[L]";
-            case 0x4D: return "[M]";
-            case 0x4E: return "[N]";
-            case 0x4F: return "[O]";
-            case 0x50: return "[P]";
-            case 0x51: return "[Q]";
-            case 0x52: return "[R]";
-            case 0x53: return "[S]";
-            case 0x54: return "[T]";
-            case 0x55: return "[U]";
-            case 0x56: return "[V]";
-            case 0x57: return "[W]";
-            case 0x58: return "[X]";
-            case 0x59: return "[Y]";
-            case 0x5A: return "[Z]";
-            case 0x5B: return "[WIN]";//L
-            case 0x5C: return "[WIN]";//R
-            case 0x5D: return "[APP]";
-            case 0x5F: return "[SLP]";
-            case 0x60: return "[0]";
-            case 0x61: return "[1]";
-            case 0x62: return "[2]";
-            case 0x63: return "[3]";
-            case 0x64: return "[4]";
-            case 0x65: return "[5]";
-            case 0x66: return "[6]";
-            case 0x67: return "[7]";
-            case 0x68: return "[8]";
-            case 0x69: return "[9]";
-            case 0x6A: return "[*]";
-            case 0x6B: return "[+]";
-            case 0x6C: return "[SEP]";
-            case 0x6D: return "[-]";
-            case 0x6E: return "[.]";
-            case 0x6F: return "[/]";
-            case 0x70: return "[F1]";
-            case 0x71: return "[F2]";
-            case 0x72: return "[F3]";
-            case 0x73: return "[F4]";
-            case 0x74: return "[F5]";
-            case 0x75: return "[F6]";
-            case 0x76: return "[F7]";
-            case 0x77: return "[F8]";
-            case 0x78: return "[F9]";
-            case 0x79: return "[F10]";
-            case 0x7A: return "[F11]";
-            case 0x7B: return "[F12]";
-            case 0x7C: return "[F13]";
-            case 0x7D: return "[F14]";
-            case 0x7E: return "[F15]";
-            case 0x7F: return "[F16]";
-            case 0x80: return "[F17]";
-            case 0x81: return "[F18]";
-            case 0x82: return "[F19]";
-            case 0x83: return "[F20]";
-            case 0x84: return "[F21]";
-            case 0x85: return "[F22]";
-            case 0x86: return "[F23]";
-            case 0x87: return "[F24]";
-            case 0x90: return "[NUM]";
-            case 0x91: return "[SCR]";
-            case 0xA0: return "[SHF]";//L
-            case 0xA1: return "[SHF]";//R
-            case 0xA2: return "[CLR]";//L
-            case 0xA3: return "[CLR]";//R
-            case 0xA4: return "[ALT]";//L
-            case 0xA5: return "[ALT]";//R
-            case 0xC0: return "[~]";
-            case 0xBC: return "[,]";
-            case 0xBE: return "[.]";
-            case 0xBF: return "[/]";
-            case 0xBA: return "[;]";
-            case 0xDE: return "[']";
-            case 0xDB: return "[[]";
-            case 0xDD: return "[]]";
-            case 0xDC: return "[\]";
-            default: return "[" + to_string(VK_code) + "]";//如果什么都不是直接返回编码
-            }
-        }
-        //---------------------------------------------------------------------
         BOOL In_MouseEventJudgment(int X, int Y, int XX, int YY) noexcept//检测鼠标坐标是否在窗口矩形坐标内
         {
             if (!(EasyGUI_MousePos.x >= EasyGUI_WindowPos.left && EasyGUI_MousePos.x <= EasyGUI_WindowPos.right && EasyGUI_MousePos.y >= EasyGUI_WindowPos.top && EasyGUI_MousePos.y <= EasyGUI_WindowPos.bottom))return false;//当指针不在窗口内
             if (EasyGUI_MousePos.x - EasyGUI_WindowPos.left >= X && EasyGUI_MousePos.x - EasyGUI_WindowPos.left <= X + XX && EasyGUI_MousePos.y - EasyGUI_WindowPos.top >= Y && EasyGUI_MousePos.y - EasyGUI_WindowPos.top <= Y + YY)return true;
             else return false;
+        }
+        //---------------------------------------------------------------------
+        BOOL In_KeyEvent(int VK_CODE, BOOL Release = false) noexcept//检测按键是否被按下 (后者参数为按下后是否立马释放)
+        {
+            const BOOL Key_State = GetAsyncKeyState(VK_CODE) & 0x8000;
+            if (Release && Key_State)//释放按键
+            {
+                if (VK_CODE == VK_LBUTTON)mouse_event(MOUSEEVENTF_LEFTUP, 0, 0, 0, 0);//鼠标键盘判断
+                else if (VK_CODE == VK_RBUTTON)mouse_event(MOUSEEVENTF_RIGHTUP, 0, 0, 0, 0);
+                else if (VK_CODE == VK_MBUTTON)mouse_event(MOUSEEVENTF_MIDDLEUP, 0, 0, 0, 0);
+                else keybd_event(VK_CODE, 0, KEYEVENTF_KEYUP, 0);
+            }
+            return Key_State;
         }
         //---------------------------------------------------------------------
         template<class A>//防止冲突
@@ -637,23 +503,15 @@ namespace EasyGUI//EasyGUI Release[2024-03-24 19:30]
             return pszMem;
         }
         //---------------------------------------------------------------------------------------------------------------------------------------------------------
-        BOOL Window_Move(short Draw_ms = 5) noexcept//移动GUI窗口（放在循环(不用放等待函数和消息循环函数) 非事件）
+        BOOL Window_Move(short Draw_ms = 10) noexcept//移动GUI窗口 (在GUI循环线程内加入此函数不需要添加延时函数来降低CPU占用)
         {
-            //--------------------------------消息循环
-            MSG msg = { 0 };
-            if (GetMessage(&msg, 0, 0, 0))
-            {
-                TranslateMessage(&msg);
-                DispatchMessage(&msg);
-            }
-            //---------------------------------------
             GetCursorPos(&EasyGUI_MousePos); GetWindowRect(EasyGUI_WindowHWND, &EasyGUI_WindowPos);//刷新坐标
             static BOOL 防止脱离 = false;
             static int OldX, OldY;//按下时坐标
             static BOOL 保存鼠标坐标 = false;
             if (GetForegroundWindow() == EasyGUI_WindowHWND)//检测窗口是否在最前端
             {
-                if (!Mouse_Block_ && GetAsyncKeyState(VK_LBUTTON) && !防止脱离)//当鼠标指针不在Block上则可以移动窗口
+                if (!Mouse_Block_ && In_KeyEvent(VK_LBUTTON) && !防止脱离)//当鼠标指针不在Block上则可以移动窗口
                 {
                     if (保存鼠标坐标)
                     {
@@ -664,17 +522,17 @@ namespace EasyGUI//EasyGUI Release[2024-03-24 19:30]
                     MoveWindow(EasyGUI_WindowHWND, EasyGUI_MousePos.x - OldX, EasyGUI_MousePos.y - OldY, EasyGUI_WindowPos.right - EasyGUI_WindowPos.left, EasyGUI_WindowPos.bottom - EasyGUI_WindowPos.top, TRUE);//移动窗口到鼠标坐标
                     防止脱离 = true;
                 }
-                else if (防止脱离 && GetAsyncKeyState(VK_LBUTTON))
+                else if (防止脱离 && In_KeyEvent(VK_LBUTTON))
                 {
                     MoveWindow(EasyGUI_WindowHWND, EasyGUI_MousePos.x - OldX, EasyGUI_MousePos.y - OldY, EasyGUI_WindowPos.right - EasyGUI_WindowPos.left, EasyGUI_WindowPos.bottom - EasyGUI_WindowPos.top, TRUE);//移动窗口到鼠标坐标
                     Mouse_Block_ = true;
-                    if (In_TickSleep<class CLASS_EasyGUI_WindowMove_Stop_FPS>(200))return false;//定时返回false (用来刷新面板)
+                    if (In_TickSleep<class CLASS_EasyGUI_WindowMove_FPS_Delay_>(100))return false;//定时返回false (用来刷新面板)
                     return true;
                 }
                 else {
                     防止脱离 = false;
                     保存鼠标坐标 = true;
-                    if (GetAsyncKeyState(VK_LBUTTON) & 0x8000)Sleep(1);
+                    if (In_KeyEvent(VK_LBUTTON))Sleep(1);
                     else Sleep(Draw_ms);//降低CPU占用
                     Mouse_Block_ = false;
                     return false;
@@ -750,7 +608,7 @@ namespace EasyGUI//EasyGUI Release[2024-03-24 19:30]
                 主题颜色 = { 0,0,0,60,60,60,30,30,30,15,15,15,3,3,3, Global_EasyGUIColor.r / 7,Global_EasyGUIColor.g / 7 ,Global_EasyGUIColor.b / 7 };
                 Global_EasyGUIColor = { 彩虹条颜色[3],彩虹条颜色[4], 彩虹条颜色[5] };
             }
-            else if (BackGround_StyleCode == 1369)//主题色渐变条*****************
+            else if (BackGround_StyleCode == 1369 || BackGround_StyleCode == 1)//主题色渐变条*****************
             {
                 const Vector3 Sins = { sin((float)GetTickCount64() / 1000 + 0), sin((float)GetTickCount64() / 1000 + 1),sin((float)GetTickCount64() / 1000 + 2) };
                 彩虹条颜色 = {
@@ -804,17 +662,13 @@ namespace EasyGUI//EasyGUI Release[2024-03-24 19:30]
                 const BOOL DetectMousePos = In_MouseEventJudgment(X, Y + 20 + 30 * i - 2 - 4, XX, 15 + 8);
                 if (m_In_Block == i)
                 {
-                    In_DrawGradientRect(X + 2, Y + 20 + 30 * i - 5, XX - 4, 15 + 10, { 20,20,20 }, Global_EasyGUIColor / 3);
-                    In_DrawGradientRect(X + 2, Y + 20 + 30 * i - 4, XX - 4, 15 + 8, Global_EasyGUIColor / 3, { 20,20,20 });
+                    In_DrawGradientRect(X + 2, Y + 20 + 30 * i - 5, XX - 4, 15 + 10, { 20,20,20 }, Global_EasyGUIColor / 4);
+                    In_DrawGradientRect(X + 2, Y + 20 + 30 * i - 4, XX - 4, 15 + 8, Global_EasyGUIColor / 4, { 20,20,20 });
                 }
                 else if (DetectMousePos)
                 {
                     In_DrawGradientRect(X + 2, Y + 20 + 30 * i - 4, XX - 4, 15 + 8, Global_EasyGUIColor / 5, { 20,20,20 });
-                    if (GetForegroundWindow() == EasyGUI_WindowHWND && GetAsyncKeyState(VK_LBUTTON) & 0x8000 && !Mouse_Slider_)
-                    {
-                        m_In_Block = i;
-                        mouse_event(MOUSEEVENTF_LEFTUP, 0, 0, 0, 0);
-                    }
+                    if (GetForegroundWindow() == EasyGUI_WindowHWND && In_KeyEvent(VK_LBUTTON, true) && !Mouse_Slider_)m_In_Block = i;
                 }
                 In_DrawString(X + 20 + 1, Y + 20 + 30 * i + 1, BlockText_[i], { 0,0,0 }, Global_EasyGUIFont, 15);
                 In_DrawString(X + 20 + 1, Y + 20 + 30 * i, BlockText_[i], { 220,220,220 }, Global_EasyGUIFont, 15);
@@ -835,46 +689,27 @@ namespace EasyGUI//EasyGUI Release[2024-03-24 19:30]
         {
             if (BlockPos.x == 0 && BlockPos.y == 0)return 0;//当无block则不进行绘制
             const BOOL DetectMousePos = In_MouseEventJudgment(BlockPos.x + 30, BlockPos.y + (30 * LineRow) - 2, 140, 12);//窗口检测
-            if (GetForegroundWindow() == EasyGUI_WindowHWND && !Mouse_Slider_)//当最前端窗口为GUI窗口接收按钮事件
-            {
-                if (!m_CheckboxValue && GetAsyncKeyState(VK_LBUTTON) & 0x8000 && DetectMousePos)
-                {
-                    m_CheckboxValue = true;
-                    mouse_event(MOUSEEVENTF_LEFTUP, 0, 0, 0, 0);
-                }
-                else if (m_CheckboxValue && GetAsyncKeyState(VK_LBUTTON) & 0x8000 && DetectMousePos)
-                {
-                    m_CheckboxValue = false;
-                    mouse_event(MOUSEEVENTF_LEFTUP, 0, 0, 0, 0);
-                }
-            }
+            if (GetForegroundWindow() == EasyGUI_WindowHWND && !Mouse_Slider_ && DetectMousePos && In_KeyEvent(VK_LBUTTON, true))m_CheckboxValue = !m_CheckboxValue;//当最前端窗口为GUI窗口接收按钮事件
             In_DrawRect(BlockPos.x - 1 + 30, BlockPos.y - 1 + (30 * LineRow), 10, 10, { 0,0,0 });
             In_DrawString(BlockPos.x + 22 + 30 + 1, BlockPos.y - 3 + (30 * LineRow) + 1, Text, { 0,0,0 }, Global_EasyGUIFont, Global_EasyGUIFontSize);
             In_DrawString(BlockPos.x + 22 + 30, BlockPos.y - 3 + (30 * LineRow), Text, TextColor, Global_EasyGUIFont, Global_EasyGUIFontSize);
-            if (m_CheckboxValue)//绘制
+            if (m_CheckboxValue)In_DrawGradientRect(BlockPos.x - 1 + 30 + 1, BlockPos.y - 1 + (30 * LineRow) + 1, 8, 8, Global_EasyGUIColor, Global_EasyGUIColor / 5, true);//绘制开关状态 (颜色主体)
+            else
             {
-                In_DrawGradientRect(BlockPos.x - 1 + 30 + 1, BlockPos.y - 1 + (30 * LineRow) + 1, 8, 8, Global_EasyGUIColor, Global_EasyGUIColor / 5, true);
-                return true;
-            }
-            else {
-                if (DetectMousePos)In_DrawGradientRect(BlockPos.x - 1 + 30 + 1, BlockPos.y - 1 + (30 * LineRow) + 1, 8, 8, Global_EasyGUIColor / 3, { 30,30,30 }, true);//移动到按钮按钮变亮
+                if (DetectMousePos)In_DrawGradientRect(BlockPos.x - 1 + 30 + 1, BlockPos.y - 1 + (30 * LineRow) + 1, 8, 8, Global_EasyGUIColor / 3, { 30,30,30 }, true);
                 else In_DrawGradientRect(BlockPos.x - 1 + 30 + 1, BlockPos.y - 1 + (30 * LineRow) + 1, 8, 8, Global_EasyGUIColor / 4, { 30,30,30 }, true);
-                return false;
             }
+            return m_CheckboxValue;
         }
         //---------------------------------------------------------------------------------------------------------------------------------------------------------
         BOOL GUI_Button(Vector2 BlockPos, short LineRow, string Text, BOOL& m_ButtonValue, short TextPos = 10) noexcept//单击按钮
         {
             if (BlockPos.x == 0 && BlockPos.y == 0)return 0;//当无block则不进行绘制
-            if (m_ButtonValue)Sleep(50);//更好地让其他循环线程接收
+            if (m_ButtonValue)Sleep(30);//更好地让其他循环线程接收
             const BOOL DetectMousePos = In_MouseEventJudgment(BlockPos.x + 55, BlockPos.y + (30 * LineRow) - 8, 230, 25);//窗口检测机制
             if (GetForegroundWindow() == EasyGUI_WindowHWND && !Mouse_Slider_)//当最前端窗口为GUI窗口接收按钮事件
             {
-                if (!m_ButtonValue && GetAsyncKeyState(VK_LBUTTON) & 0x8000 && DetectMousePos)
-                {
-                    m_ButtonValue = true;
-                    mouse_event(MOUSEEVENTF_LEFTUP, 0, 0, 0, 0);
-                }
+                if (!m_ButtonValue && DetectMousePos && In_KeyEvent(VK_LBUTTON, true))m_ButtonValue = true;
                 else m_ButtonValue = false;
             }
             In_DrawRect(BlockPos.x - 2 + 55, BlockPos.y - 2 + (30 * LineRow) - 8, 234, 29, { 0,0,0 });
@@ -889,15 +724,11 @@ namespace EasyGUI//EasyGUI Release[2024-03-24 19:30]
         BOOL GUI_Button_Small(Vector2 BlockPos, short LineRow, BOOL& m_ButtonValue) noexcept//单击按钮(小号)
         {
             if (BlockPos.x == 0 && BlockPos.y == 0)return 0;//当无block则不进行绘制
-            if (m_ButtonValue)Sleep(50);//更好地让其他循环线程接收
+            if (m_ButtonValue)Sleep(30);//更好地让其他循环线程接收
             const BOOL DetectMousePos = In_MouseEventJudgment(BlockPos.x + 10, BlockPos.y + (30 * LineRow) - 5, 13, 18);//窗口检测机制
             if (GetForegroundWindow() == EasyGUI_WindowHWND && !Mouse_Slider_)//当最前端窗口为GUI窗口接收按钮事件
             {
-                if (!m_ButtonValue && GetAsyncKeyState(VK_LBUTTON) & 0x8000 && DetectMousePos)
-                {
-                    m_ButtonValue = true;
-                    mouse_event(MOUSEEVENTF_LEFTUP, 0, 0, 0, 0);
-                }
+                if (!m_ButtonValue && DetectMousePos && In_KeyEvent(VK_LBUTTON, true))m_ButtonValue = true;
                 else m_ButtonValue = false;
             }
             In_DrawRect(BlockPos.x - 2 + 10, BlockPos.y - 2 + (30 * LineRow) - 5, 17, 22, { 0,0,0 });
@@ -916,24 +747,24 @@ namespace EasyGUI//EasyGUI Release[2024-03-24 19:30]
             static BOOL OutSide = false;//防止指针脱落时失去控制力
             if (GetForegroundWindow() == EasyGUI_WindowHWND)//当最前端窗口为GUI窗口接收按钮事件
             {
-                static const ValueClass ClassValueDetect = 0.1;
-                if (DetectMousePos && GetAsyncKeyState(VK_LEFT) & 0x8000)//当鼠标移动到滑条上方 按键反馈事件
+                static const ValueClass ClassValueDetect = 0.1;//检测是否是浮点值 (变量)
+                if (DetectMousePos && In_KeyEvent(VK_LEFT, true))//当鼠标移动到滑条上方 按键反馈事件
                 {
                     if (ClassValueDetect == 0)m_SliderValue--;//检测是否是浮点值
                     else m_SliderValue -= 0.05;
-                    keybd_event(VK_LEFT, 0, KEYEVENTF_KEYUP, 0);
                 }
-                else if (DetectMousePos && GetAsyncKeyState(VK_RIGHT) & 0x8000) {
+                else if (DetectMousePos && In_KeyEvent(VK_RIGHT, true))
+                {
                     if (ClassValueDetect == 0)m_SliderValue++;//检测是否是浮点值
                     else m_SliderValue += 0.05;
-                    keybd_event(VK_RIGHT, 0, KEYEVENTF_KEYUP, 0);
                 }
-                if (GetAsyncKeyState(VK_LBUTTON) & 0x8000 && DetectMousePos && !OutSide)OutSide = true;
-                if (OutSide && GetAsyncKeyState(VK_LBUTTON) & 0x8000) {
+                if (In_KeyEvent(VK_LBUTTON) && DetectMousePos && !OutSide)OutSide = true;
+                if (OutSide && In_KeyEvent(VK_LBUTTON))
+                {
                     m_SliderValue = ((EasyGUI_MousePos.x - BlockPos.x - 54 - EasyGUI_WindowPos.left) * (EndValue - StartValue) / 230) + StartValue;
                     Mouse_Block_ = true; Mouse_Slider_ = true;
                 }
-                else if (!(GetAsyncKeyState(VK_LBUTTON) & 0x8000)) { OutSide = false; Mouse_Slider_ = false; }
+                else if (!In_KeyEvent(VK_LBUTTON)) { OutSide = false; Mouse_Slider_ = false; }
             }
             int SliderPos = (float)(m_SliderValue - StartValue) / (float)(EndValue - StartValue) * 230;
             if (SliderPos >= 230)SliderPos = 230; else if (SliderPos <= 0) SliderPos = 0;
@@ -953,39 +784,178 @@ namespace EasyGUI//EasyGUI Release[2024-03-24 19:30]
         int GUI_KeySelector(Vector2 BlockPos, short LineRow, int& m_KeySelectValue) noexcept//按键选取按钮
         {
             if (BlockPos.x == 0 && BlockPos.y == 0)return 0;//当无block则不进行绘制
-            if (m_KeySelectValue == 0xCCCCCCCC)m_KeySelectValue = 0;//修复过量
+            if (m_KeySelectValue >= 0xCCCCCCCC)m_KeySelectValue = 0;//修复过量
             const BOOL DetectMousePos = In_MouseEventJudgment(BlockPos.x + 350, BlockPos.y + 26 + (30 * (LineRow - 1)), 40, 12);//鼠标坐标检测
             static BOOL BoxMea = false;//只声明一次初始开关设定变量
             if (GetForegroundWindow() == EasyGUI_WindowHWND && !Mouse_Slider_)//当最前端窗口为GUI窗口接收按钮事件
             {
-                if (!BoxMea && GetAsyncKeyState(VK_LBUTTON) & 0x8000 && DetectMousePos)
-                {
-                    BoxMea = true;
-                    mouse_event(MOUSEEVENTF_LEFTUP, 0, 0, 0, 0);
-                }
+                if (!BoxMea && DetectMousePos && In_KeyEvent(VK_LBUTTON, true))BoxMea = true;
                 else if (BoxMea)
                 {
-                    for (int i = 0x01; i < 0xFE; ++i)//VK键码遍历
+                    if (In_KeyEvent(VK_BACK, true) || In_KeyEvent(VK_ESCAPE, true)) { m_KeySelectValue = 0; BoxMea = false; }//默认无值
+                    for (int i = 0x0; i < 0xFE; ++i)//VK键码遍历
                     {
-                        if (GetAsyncKeyState(i) & 0x8000)//当按下任意键
+                        if (In_KeyEvent(i, true))//当按下任意键
                         {
                             m_KeySelectValue = i;
                             BoxMea = false;
                         }
                     }
-                    if ((GetAsyncKeyState(VK_BACK) & 0x8000) || (GetAsyncKeyState(VK_ESCAPE) & 0x8000))m_KeySelectValue = 0;//默认无值
                 }
             }
             if (!BoxMea)
             {
-                string DrawString_VK = In_VKCode_to_String(m_KeySelectValue);
-                if (!m_KeySelectValue)DrawString_VK = "[-]";
+                string DrawString_VK = "";
+                switch (m_KeySelectValue)
+                {
+                case 0x00: DrawString_VK = "[-]"; break;
+                case 0x01: DrawString_VK = "[M1]"; break;//鼠标左键
+                case 0x02: DrawString_VK = "[M2]"; break;//鼠标右键
+                case 0x03: DrawString_VK = "[CAN]"; break;//鼠标中断处理
+                case 0x04: DrawString_VK = "[M3]"; break;//鼠标中键
+                case 0x05: DrawString_VK = "[M4]"; break;//鼠标侧键下
+                case 0x06: DrawString_VK = "[M5]"; break;//鼠标侧键上
+                case 0x07: DrawString_VK = "[NONE]"; break;
+                case 0x08: DrawString_VK = "[BACK]"; break;
+                case 0x09: DrawString_VK = "[TAB]"; break;
+                case 0x0C: DrawString_VK = "[CLE]"; break;
+                case 0x0D: DrawString_VK = "[ENT]"; break;
+                case 0x10: DrawString_VK = "[SHF]"; break;
+                case 0x11: DrawString_VK = "[CLR]"; break;
+                case 0x12: DrawString_VK = "[ALT]"; break;
+                case 0x13: DrawString_VK = "[PAU]"; break;
+                case 0x14: DrawString_VK = "[CAP]"; break;
+                case 0x15: DrawString_VK = "[KAN]"; break;
+                case 0x16: DrawString_VK = "[KAN]"; break;
+                case 0x17: DrawString_VK = "[JUN]"; break;
+                case 0x18: DrawString_VK = "[FIN]"; break;
+                case 0x19: DrawString_VK = "[HAN]"; break;
+                case 0x1B: DrawString_VK = "[ESC]"; break;
+                case 0x1C: DrawString_VK = "[CON]"; break;
+                case 0x1D: DrawString_VK = "[NON]"; break;
+                case 0x1E: DrawString_VK = "[ACC]"; break;
+                case 0x1F: DrawString_VK = "[MOD]"; break;
+                case 0x20: DrawString_VK = "[SPA]"; break;
+                case 0x21: DrawString_VK = "[PRI]"; break;
+                case 0x22: DrawString_VK = "[NEXT]"; break;
+                case 0x23: DrawString_VK = "[END]"; break;
+                case 0x24: DrawString_VK = "[HOME]"; break;
+                case 0x25: DrawString_VK = "[LEFT]"; break;
+                case 0x26: DrawString_VK = "[UP]"; break;
+                case 0x27: DrawString_VK = "[RIGT]"; break;
+                case 0x28: DrawString_VK = "[DOWN]"; break;
+                case 0x29: DrawString_VK = "[SEL]"; break;
+                case 0x2A: DrawString_VK = "[PRI]"; break;
+                case 0x2B: DrawString_VK = "[EXE]"; break;
+                case 0x2C: DrawString_VK = "[SNAP]"; break;
+                case 0x2D: DrawString_VK = "[INS]"; break;
+                case 0x2E: DrawString_VK = "[DEL]"; break;
+                case 0x2F: DrawString_VK = "[HELP]"; break;
+                case 0x30: DrawString_VK = "[0]"; break;
+                case 0x31: DrawString_VK = "[1]"; break;
+                case 0x32: DrawString_VK = "[2]"; break;
+                case 0x33: DrawString_VK = "[3]"; break;
+                case 0x34: DrawString_VK = "[4]"; break;
+                case 0x35: DrawString_VK = "[5]"; break;
+                case 0x36: DrawString_VK = "[6]"; break;
+                case 0x37: DrawString_VK = "[7]"; break;
+                case 0x38: DrawString_VK = "[8]"; break;
+                case 0x39: DrawString_VK = "[9]"; break;
+                case 0x41: DrawString_VK = "[A]"; break;
+                case 0x42: DrawString_VK = "[B]"; break;
+                case 0x43: DrawString_VK = "[C]"; break;
+                case 0x44: DrawString_VK = "[D]"; break;
+                case 0x45: DrawString_VK = "[E]"; break;
+                case 0x46: DrawString_VK = "[F]"; break;
+                case 0x47: DrawString_VK = "[G]"; break;
+                case 0x48: DrawString_VK = "[H]"; break;
+                case 0x49: DrawString_VK = "[I]"; break;
+                case 0x4A: DrawString_VK = "[J]"; break;
+                case 0x4B: DrawString_VK = "[K]"; break;
+                case 0x4C: DrawString_VK = "[L]"; break;
+                case 0x4D: DrawString_VK = "[M]"; break;
+                case 0x4E: DrawString_VK = "[N]"; break;
+                case 0x4F: DrawString_VK = "[O]"; break;
+                case 0x50: DrawString_VK = "[P]"; break;
+                case 0x51: DrawString_VK = "[Q]"; break;
+                case 0x52: DrawString_VK = "[R]"; break;
+                case 0x53: DrawString_VK = "[S]"; break;
+                case 0x54: DrawString_VK = "[T]"; break;
+                case 0x55: DrawString_VK = "[U]"; break;
+                case 0x56: DrawString_VK = "[V]"; break;
+                case 0x57: DrawString_VK = "[W]"; break;
+                case 0x58: DrawString_VK = "[X]"; break;
+                case 0x59: DrawString_VK = "[Y]"; break;
+                case 0x5A: DrawString_VK = "[Z]"; break;
+                case 0x5B: DrawString_VK = "[WIN]"; break;//L
+                case 0x5C: DrawString_VK = "[WIN]"; break;//R
+                case 0x5D: DrawString_VK = "[APP]"; break;
+                case 0x5F: DrawString_VK = "[SLP]"; break;
+                case 0x60: DrawString_VK = "[0]"; break;
+                case 0x61: DrawString_VK = "[1]"; break;
+                case 0x62: DrawString_VK = "[2]"; break;
+                case 0x63: DrawString_VK = "[3]"; break;
+                case 0x64: DrawString_VK = "[4]"; break;
+                case 0x65: DrawString_VK = "[5]"; break;
+                case 0x66: DrawString_VK = "[6]"; break;
+                case 0x67: DrawString_VK = "[7]"; break;
+                case 0x68: DrawString_VK = "[8]"; break;
+                case 0x69: DrawString_VK = "[9]"; break;
+                case 0x6A: DrawString_VK = "[*]"; break;
+                case 0x6B: DrawString_VK = "[+]"; break;
+                case 0x6C: DrawString_VK = "[SEP]"; break;
+                case 0x6D: DrawString_VK = "[-]"; break;
+                case 0x6E: DrawString_VK = "[.]"; break;
+                case 0x6F: DrawString_VK = "[/]"; break;
+                case 0x70: DrawString_VK = "[F1]"; break;
+                case 0x71: DrawString_VK = "[F2]"; break;
+                case 0x72: DrawString_VK = "[F3]"; break;
+                case 0x73: DrawString_VK = "[F4]"; break;
+                case 0x74: DrawString_VK = "[F5]"; break;
+                case 0x75: DrawString_VK = "[F6]"; break;
+                case 0x76: DrawString_VK = "[F7]"; break;
+                case 0x77: DrawString_VK = "[F8]"; break;
+                case 0x78: DrawString_VK = "[F9]"; break;
+                case 0x79: DrawString_VK = "[F10]"; break;
+                case 0x7A: DrawString_VK = "[F11]"; break;
+                case 0x7B: DrawString_VK = "[F12]"; break;
+                case 0x7C: DrawString_VK = "[F13]"; break;
+                case 0x7D: DrawString_VK = "[F14]"; break;
+                case 0x7E: DrawString_VK = "[F15]"; break;
+                case 0x7F: DrawString_VK = "[F16]"; break;
+                case 0x80: DrawString_VK = "[F17]"; break;
+                case 0x81: DrawString_VK = "[F18]"; break;
+                case 0x82: DrawString_VK = "[F19]"; break;
+                case 0x83: DrawString_VK = "[F20]"; break;
+                case 0x84: DrawString_VK = "[F21]"; break;
+                case 0x85: DrawString_VK = "[F22]"; break;
+                case 0x86: DrawString_VK = "[F23]"; break;
+                case 0x87: DrawString_VK = "[F24]"; break;
+                case 0x90: DrawString_VK = "[NUM]"; break;
+                case 0x91: DrawString_VK = "[SCR]"; break;
+                case 0xA0: DrawString_VK = "[SHF]"; break;//L
+                case 0xA1: DrawString_VK = "[SHF]"; break;//R
+                case 0xA2: DrawString_VK = "[CLR]"; break;//L
+                case 0xA3: DrawString_VK = "[CLR]"; break;//R
+                case 0xA4: DrawString_VK = "[ALT]"; break;//L
+                case 0xA5: DrawString_VK = "[ALT]"; break;//R
+                case 0xC0: DrawString_VK = "[~]"; break;
+                case 0xBC: DrawString_VK = "[,]"; break;
+                case 0xBE: DrawString_VK = "[.]"; break;
+                case 0xBF: DrawString_VK = "[/]"; break;
+                case 0xBA: DrawString_VK = "[;]"; break;
+                case 0xDE: DrawString_VK = "[']"; break;
+                case 0xDB: DrawString_VK = "[[]"; break;
+                case 0xDD: DrawString_VK = "[]]"; break;
+                case 0xDC: DrawString_VK = "[\]"; break;
+                default: DrawString_VK = "[" + to_string(m_KeySelectValue) + "]"; break;//如果什么都不是直接返回编码
+                }
                 if (DetectMousePos)In_DrawString_Simple(BlockPos.x + 355, BlockPos.y + 27 + (30 * (LineRow - 1)), DrawString_VK, { 130,130,130 });
                 else In_DrawString_Simple(BlockPos.x + 355, BlockPos.y + 27 + (30 * (LineRow - 1)), DrawString_VK, { 100,100,100 });
                 return m_KeySelectValue;
             }
             else In_DrawString_Simple(BlockPos.x + 355, BlockPos.y + 27 + (30 * (LineRow - 1)), "[-]", { 150,130,100 });//激活读取
-            return 0;
+            return 0;//激活读取时返回0
         }
         //---------------------------------------------------------------------------------------------------------------------------------------------------------
         BOOL GUI_Tips(Vector2 BlockPos, short LineRow, string TipsString, Vector4 TextColor = { 255,255,255 }) noexcept//鼠标指针提示(只支持单行字符)   (代码写在最后为了不被覆盖绘制)
@@ -1006,18 +976,17 @@ namespace EasyGUI//EasyGUI Release[2024-03-24 19:30]
         Vector4 GUI_ColorSelector(Vector2 BlockPos, short LineRow, Vector4& m_ColorValue) noexcept//颜色选择器
         {
             if (BlockPos.x == 0 && BlockPos.y == 0)return { -1,-1,-1 };//当无block则不进行绘制
-            if (In_MouseEventJudgment(BlockPos.x + 360, BlockPos.y - 6 + (30 * LineRow), 20, 20) && (GetAsyncKeyState(VK_LBUTTON) & 0x8000) && !Mouse_Slider_)//复制选取的颜色值
+            if (GetForegroundWindow() == EasyGUI_WindowHWND && In_MouseEventJudgment(BlockPos.x + 360, BlockPos.y - 6 + (30 * LineRow), 20, 20) && In_KeyEvent(VK_LBUTTON, true) && !Mouse_Slider_)//复制选取的颜色值
             {
                 const string Color_String_Copy__ = to_string(m_ColorValue.r) + ", " + to_string(m_ColorValue.g) + ", " + to_string(m_ColorValue.b);//要复制的字符串
                 OpenClipboard(NULL);//打开剪切板
                 EmptyClipboard();//清空剪切板
-                const HANDLE hHandle = GlobalAlloc(GMEM_FIXED, strlen(Color_String_Copy__.c_str()) + 1);//分配内存
+                const auto hHandle = GlobalAlloc(GMEM_FIXED, strlen(Color_String_Copy__.c_str()) + 1);//分配内存
                 strcpy_s((char*)GlobalLock(hHandle), strlen(Color_String_Copy__.c_str()) + 1, Color_String_Copy__.c_str());
                 SetClipboardData(CF_TEXT, hHandle);//设置剪切板数据
                 GlobalUnlock(hHandle);//解除锁定
                 CloseClipboard();//关闭剪切板
-                Beep(100, 30);//复制成功提醒
-                mouse_event(MOUSEEVENTF_LEFTUP, 0, 0, 0, 0);
+                Beep(100, 20);//复制成功提醒
             }
             for (short Color_Bl = 0; Color_Bl <= 2; ++Color_Bl)
             {
@@ -1025,12 +994,10 @@ namespace EasyGUI//EasyGUI Release[2024-03-24 19:30]
                 const BOOL DetectMousePos = In_MouseEventJudgment(BlockPos.x + 218 + 46 * Color_Bl, BlockPos.y - 6 + (30 * LineRow), 41, 20);
                 if (GetForegroundWindow() == EasyGUI_WindowHWND && DetectMousePos && !Mouse_Slider_)//当最前端窗口为GUI窗口接收按钮事件 当鼠标移动到滑条上方 按键反馈事件
                 {
-                    if (GetAsyncKeyState(VK_LBUTTON) & 0x8000)UsedColor[Color_Bl]++;
-                    else if (GetAsyncKeyState(VK_RBUTTON) & 0x8000)UsedColor[Color_Bl]--;
-                    mouse_event(MOUSEEVENTF_LEFTUP, 0, 0, 0, 0);
-                    mouse_event(MOUSEEVENTF_RIGHTUP, 0, 0, 0, 0);
-                    if (GetAsyncKeyState(VK_LEFT) & 0x8000)UsedColor[Color_Bl] += 5;
-                    else if (GetAsyncKeyState(VK_RIGHT) & 0x8000)UsedColor[Color_Bl] -= 5;
+                    if (In_KeyEvent(VK_LBUTTON, true))UsedColor[Color_Bl]++;
+                    else if (In_KeyEvent(VK_RBUTTON, true))UsedColor[Color_Bl]--;
+                    if (In_KeyEvent(VK_LEFT, true))UsedColor[Color_Bl] += 5;
+                    else if (In_KeyEvent(VK_RIGHT, true))UsedColor[Color_Bl] -= 5;
                 }
                 if (UsedColor[Color_Bl] >= 255)UsedColor[Color_Bl] = 255;//范围限制
                 else if (UsedColor[Color_Bl] <= 0)UsedColor[Color_Bl] = 0;
@@ -1050,18 +1017,17 @@ namespace EasyGUI//EasyGUI Release[2024-03-24 19:30]
         Vector4 GUI_ColorSelector_a(Vector2 BlockPos, short LineRow, Vector4& m_ColorValue) noexcept//颜色选择器(包含Alpha 透明度值)
         {
             if (BlockPos.x == 0 && BlockPos.y == 0)return { -1,-1,-1,-1 };//当无block则不进行绘制
-            if (In_MouseEventJudgment(BlockPos.x + 360, BlockPos.y - 6 + (30 * LineRow), 20, 20) && (GetAsyncKeyState(VK_LBUTTON) & 0x8000) && !Mouse_Slider_)//复制选取的颜色值
+            if (GetForegroundWindow() == EasyGUI_WindowHWND && In_MouseEventJudgment(BlockPos.x + 360, BlockPos.y - 6 + (30 * LineRow), 20, 20) && In_KeyEvent(VK_LBUTTON, true) && !Mouse_Slider_)//复制选取的颜色值
             {
                 const string Color_String_Copy__ = to_string(m_ColorValue.r) + ", " + to_string(m_ColorValue.g) + ", " + to_string(m_ColorValue.b) + ", " + to_string(m_ColorValue.a);//要复制的字符串
                 OpenClipboard(NULL);//打开剪切板
                 EmptyClipboard();//清空剪切板
-                const HANDLE hHandle = GlobalAlloc(GMEM_FIXED, strlen(Color_String_Copy__.c_str()) + 1);//分配内存
+                const auto hHandle = GlobalAlloc(GMEM_FIXED, strlen(Color_String_Copy__.c_str()) + 1);//分配内存
                 strcpy_s((char*)GlobalLock(hHandle), strlen(Color_String_Copy__.c_str()) + 1, Color_String_Copy__.c_str());
                 SetClipboardData(CF_TEXT, hHandle);//设置剪切板数据
                 GlobalUnlock(hHandle);//解除锁定
                 CloseClipboard();//关闭剪切板
-                Beep(100, 30);//复制成功提醒
-                mouse_event(MOUSEEVENTF_LEFTUP, 0, 0, 0, 0);
+                Beep(100, 20);//复制成功提醒
             }
             for (short Color_Bl = 0; Color_Bl <= 3; ++Color_Bl)
             {
@@ -1069,12 +1035,10 @@ namespace EasyGUI//EasyGUI Release[2024-03-24 19:30]
                 const BOOL DetectMousePos = In_MouseEventJudgment(BlockPos.x + 172 + 46 * Color_Bl, BlockPos.y - 6 + (30 * LineRow), 41, 20);
                 if (GetForegroundWindow() == EasyGUI_WindowHWND && DetectMousePos && !Mouse_Slider_)//当最前端窗口为GUI窗口接收按钮事件 当鼠标移动到滑条上方 按键反馈事件
                 {
-                    if (GetAsyncKeyState(VK_LBUTTON) & 0x8000)UsedColor[Color_Bl]++;
-                    else if (GetAsyncKeyState(VK_RBUTTON) & 0x8000)UsedColor[Color_Bl]--;
-                    mouse_event(MOUSEEVENTF_LEFTUP, 0, 0, 0, 0);
-                    mouse_event(MOUSEEVENTF_RIGHTUP, 0, 0, 0, 0);
-                    if (GetAsyncKeyState(VK_LEFT) & 0x8000)UsedColor[Color_Bl] += 5;
-                    else if (GetAsyncKeyState(VK_RIGHT) & 0x8000)UsedColor[Color_Bl] -= 5;
+                    if (In_KeyEvent(VK_LBUTTON, true))UsedColor[Color_Bl]++;
+                    else if (In_KeyEvent(VK_RBUTTON, true))UsedColor[Color_Bl]--;
+                    if (In_KeyEvent(VK_LEFT, true))UsedColor[Color_Bl] += 5;
+                    else if (In_KeyEvent(VK_RIGHT, true))UsedColor[Color_Bl] -= 5;
                 }
                 if (UsedColor[Color_Bl] >= 255)UsedColor[Color_Bl] = 255;//范围限制
                 else if (UsedColor[Color_Bl] <= 0)UsedColor[Color_Bl] = 0;
@@ -1101,16 +1065,12 @@ namespace EasyGUI//EasyGUI Release[2024-03-24 19:30]
                 const BOOL DetectMousePos = In_MouseEventJudgment(BlockPos.x + 180 + 70 * Color_Bl, BlockPos.y - 6 + (30 * LineRow), 68, 20);
                 if (GetForegroundWindow() == EasyGUI_WindowHWND && DetectMousePos && !Mouse_Slider_)//当最前端窗口为GUI窗口接收按钮事件 当鼠标移动到滑条上方 按键反馈事件
                 {
-                    if (GetAsyncKeyState(VK_LBUTTON) & 0x8000)UsedPos[Color_Bl] += 0.03;
-                    else if (GetAsyncKeyState(VK_RBUTTON) & 0x8000)UsedPos[Color_Bl] -= 0.03;
-                    if (GetAsyncKeyState(VK_LEFT) & 0x8000)UsedPos[Color_Bl] += 1;
-                    else if (GetAsyncKeyState(VK_RIGHT) & 0x8000)UsedPos[Color_Bl] -= 1;
-                    mouse_event(MOUSEEVENTF_LEFTUP, 0, 0, 0, 0);
-                    mouse_event(MOUSEEVENTF_RIGHTUP, 0, 0, 0, 0);
-                    keybd_event(VK_LEFT, 0, KEYEVENTF_KEYUP, 0);
-                    keybd_event(VK_RIGHT, 0, KEYEVENTF_KEYUP, 0);
-                    if (GetAsyncKeyState(VK_UP) & 0x8000)UsedPos[Color_Bl] += 10;//快速变值
-                    else if (GetAsyncKeyState(VK_DOWN) & 0x8000)UsedPos[Color_Bl] -= 10;
+                    if (In_KeyEvent(VK_LBUTTON, true))UsedPos[Color_Bl] += 0.03;
+                    else if (In_KeyEvent(VK_RBUTTON, true))UsedPos[Color_Bl] -= 0.03;
+                    if (In_KeyEvent(VK_LEFT, true))UsedPos[Color_Bl] += 1;
+                    else if (In_KeyEvent(VK_RIGHT, true))UsedPos[Color_Bl] -= 1;
+                    if (In_KeyEvent(VK_UP))UsedPos[Color_Bl] += 10;//快速变值
+                    else if (In_KeyEvent(VK_DOWN))UsedPos[Color_Bl] -= 10;
                     m_PosValue = { UsedPos[0],UsedPos[1],UsedPos[2] };
                 }
                 In_DrawRect(BlockPos.x + 180 + 70 * Color_Bl, BlockPos.y - 6 + (30 * LineRow), 70, 20, { 0,0,0 });
@@ -1137,7 +1097,7 @@ namespace EasyGUI//EasyGUI Release[2024-03-24 19:30]
             {
                 if (i >= LimitLine)continue;//限制行数
                 const BOOL DetectMousePos = In_MouseEventJudgment(BlockPos.x + 54, BlockPos.y + StartLineRow * 30 + i * 25 - 5, 232, 20);//光标检测范围
-                if (GetForegroundWindow() == EasyGUI_WindowHWND && !Mouse_Slider_ && DetectMousePos && (GetAsyncKeyState(VK_LBUTTON) & 0x8000 || GetAsyncKeyState(VK_RBUTTON) & 0x8000)) { m_InLine = i; mouse_event(MOUSEEVENTF_LEFTUP, 0, 0, 0, 0); mouse_event(MOUSEEVENTF_RIGHTUP, 0, 0, 0, 0);}//赋值选择
+                if (GetForegroundWindow() == EasyGUI_WindowHWND && !Mouse_Slider_ && DetectMousePos && In_KeyEvent(VK_LBUTTON, true))m_InLine = i;//赋值选择
                 if (m_InLine == i)
                 {
                     In_DrawGradientRect(BlockPos.x + 54, BlockPos.y + StartLineRow * 30 + i * 25 - 5, 232, 20, Global_EasyGUIColor / 6, { 15,15,15 });
@@ -1145,13 +1105,9 @@ namespace EasyGUI//EasyGUI Release[2024-03-24 19:30]
                     In_DrawString(BlockPos.x + 65, BlockPos.y + StartLineRow * 30 + i * 25 - 1, LineString[i], Global_EasyGUIColor, Global_EasyGUIFont, Global_EasyGUIFontSize, 600);
                 }
                 else {
+                    if (DetectMousePos)In_DrawGradientRect(BlockPos.x + 54, BlockPos.y + StartLineRow * 30 + i * 25 - 5, 232, 20, Global_EasyGUIColor / 7, { 15,15,15 });//当光标选择时视觉反馈 (在上方时)
                     In_DrawString(BlockPos.x + 65 + 1, BlockPos.y + StartLineRow * 30 + i * 25 - 1 + 1, LineString[i], { 0,0,0 }, Global_EasyGUIFont, Global_EasyGUIFontSize);
-                    if (DetectMousePos)//当光标选择时视觉反馈 (在上方时)
-                    {
-                        In_DrawGradientRect(BlockPos.x + 54, BlockPos.y + StartLineRow * 30 + i * 25 - 5, 232, 20, Global_EasyGUIColor / 6, { 15,15,15 });
-                        In_DrawString(BlockPos.x + 65, BlockPos.y + StartLineRow * 30 + i * 25 - 1, LineString[i], { 255,255,255 }, Global_EasyGUIFont, Global_EasyGUIFontSize);
-                    }
-                    else In_DrawString(BlockPos.x + 65, BlockPos.y + StartLineRow * 30 + i * 25 - 1, LineString[i], { 200,200,200 }, Global_EasyGUIFont, Global_EasyGUIFontSize);
+                    In_DrawString(BlockPos.x + 65, BlockPos.y + StartLineRow * 30 + i * 25 - 1, LineString[i], { 200,200,200 }, Global_EasyGUIFont, Global_EasyGUIFontSize);
                 }
             }
             return m_InLine;
@@ -1166,18 +1122,40 @@ namespace EasyGUI//EasyGUI Release[2024-03-24 19:30]
             string DrawString = m_String;//绘制字符串
             if (GetForegroundWindow() == EasyGUI_WindowHWND && !Mouse_Slider_)//当最前端窗口为GUI窗口接收输入框事件
             {
-                if (!IsInput && (GetAsyncKeyState(VK_LBUTTON) & 0x8000 || GetAsyncKeyState(VK_RBUTTON) & 0x8000) && DetectMousePos)//进入输入状态
-                {
-                    IsInput = true;
-                    mouse_event(MOUSEEVENTF_LEFTUP, 0, 0, 0, 0);
-                    mouse_event(MOUSEEVENTF_RIGHTUP, 0, 0, 0, 0);
-                }
+                if (!IsInput && DetectMousePos && In_KeyEvent(VK_LBUTTON, true))IsInput = true;//进入输入状态
                 else if (IsInput)//在输入状态时
                 {
                     string PressedKey = "";//按键记录变量
-                    for (int i = 0x10; i < 0xFE; ++i)//VK键码遍历 (检测按下了什么键)
+                    if (In_KeyEvent(VK_LCONTROL) || In_KeyEvent(VK_RCONTROL))//Ctrl键脚本
                     {
-                        if (GetAsyncKeyState(i) & 0x8000)
+                        if (In_KeyEvent(0x43, true))//Ctrl + C 复制
+                        {
+                            OpenClipboard(NULL);//打开剪切板
+                            EmptyClipboard();//清空剪切板
+                            const auto hHandle = GlobalAlloc(GMEM_FIXED, strlen(m_String.c_str()) + 1);//分配内存
+                            strcpy_s((char*)GlobalLock(hHandle), strlen(m_String.c_str()) + 1, m_String.c_str());
+                            SetClipboardData(CF_TEXT, hHandle);//设置剪切板数据
+                            GlobalUnlock(hHandle);//解除锁定
+                            CloseClipboard();//关闭剪切板
+                            Beep(100, 20);//复制成功提醒
+                        }
+                        if (In_KeyEvent(0x56, true))//Ctrl + V 粘贴
+                        {
+                            OpenClipboard(NULL);//打开剪贴板
+                            if (IsClipboardFormatAvailable(CF_TEXT))
+                            {
+                                const auto h = GetClipboardData(CF_TEXT);//获取剪切板数据
+                                m_String += ((char*)GlobalLock(h));//在尾部粘贴字符串内容
+                                GlobalUnlock(h);//解除锁定
+                            }
+                            CloseClipboard();//关闭剪贴板
+                            Beep(100, 20);//粘贴成功提醒
+                        }
+                    }
+                    for (int i = 0x8; i < 0xFE; ++i)//VK键码遍历 (检测按下了什么键)
+                    {
+                        if (In_KeyEvent(VK_LCONTROL) || In_KeyEvent(VK_RCONTROL))continue;//不阻止Ctrl脚本事件
+                        if (In_KeyEvent(i, true))
                         {
                             switch (i)//相比if函数执行更快
                             {
@@ -1220,38 +1198,40 @@ namespace EasyGUI//EasyGUI Release[2024-03-24 19:30]
                             case 0x5A:PressedKey = "z"; break;
                             case 0xBE:PressedKey = "."; break;
                             case 0xBF:PressedKey = "/"; break;
+                            case 0x60:PressedKey = "0"; break;//以下小键盘按键**
+                            case 0x61:PressedKey = "1"; break;
+                            case 0x62:PressedKey = "2"; break;
+                            case 0x63:PressedKey = "3"; break;
+                            case 0x64:PressedKey = "4"; break;
+                            case 0x65:PressedKey = "5"; break;
+                            case 0x66:PressedKey = "6"; break;
+                            case 0x67:PressedKey = "7"; break;
+                            case 0x68:PressedKey = "8"; break;
+                            case 0x69:PressedKey = "9"; break;
+                            case 0x6A:PressedKey = "*"; break;
+                            case 0x6B:PressedKey = "+"; break;
+                            case 0x6D:PressedKey = "-"; break;
+                            case 0x6E:PressedKey = "."; break;
+                            case 0x6F:PressedKey = "/"; break;//以上小键盘按键**
+                                //===================================================
+                            case VK_BACK:if (m_String.size() > 0)m_String.erase(m_String.end() - 1); break;//擦除最后一个字符
+                            case VK_DELETE:m_String = ""; break;//清除全部字符
+                            case VK_ESCAPE:case VK_RETURN:IsInput = false; break;//按键解除输入状态
                             }
                             if (GetKeyState(0x14))transform(PressedKey.begin(), PressedKey.end(), PressedKey.begin(), toupper);//转换大写 (仅限CAPSLOCK)
                             m_String += PressedKey;//返回按下
-                            if (m_String.size() > 30)m_String.erase(m_String.end() - 1);//防止过量 (绘制在非绘制区域)
-                            keybd_event(i, 0, KEYEVENTF_KEYUP, 0);//释放按键
                         }
                     }
-                    if (GetAsyncKeyState(VK_BACK) & 0x8000 && m_String.size() != 0)//擦除最后一个字符
-                    {
-                        m_String.erase(m_String.end() - 1);
-                        keybd_event(VK_BACK, 0, KEYEVENTF_KEYUP, 0);
-                    }
-                    DrawString += "_";//输入标识
-                    if (!DetectMousePos && (GetAsyncKeyState(VK_LBUTTON) & 0x8000 || GetAsyncKeyState(VK_RBUTTON) & 0x8000))//鼠标解除输入状态
-                    {
-                        IsInput = false;
-                        mouse_event(MOUSEEVENTF_LEFTUP, 0, 0, 0, 0);
-                        mouse_event(MOUSEEVENTF_RIGHTUP, 0, 0, 0, 0);
-                    }
-                    if (GetAsyncKeyState(VK_RETURN) & 0x8000 || GetAsyncKeyState(VK_ESCAPE) & 0x8000)//按键解除输入状态
-                    {
-                        IsInput = false;
-                        keybd_event(VK_RETURN, 0, KEYEVENTF_KEYUP, 0);
-                        keybd_event(VK_ESCAPE, 0, KEYEVENTF_KEYUP, 0);
-                    }
+                    m_String = m_String.substr(0, 30);//防止过量 (防止绘制在非绘制区域)
+                    DrawString += "_";//输入中 绘制标识
+                    if (!DetectMousePos && (In_KeyEvent(VK_LBUTTON) || In_KeyEvent(VK_RBUTTON)))IsInput = false;//鼠标解除输入状态
                 }
             }
             In_DrawRect(BlockPos.x + 53, BlockPos.y - 2 + (30 * LineRow) - 7, 234, 27, { 0,0,0 });
             In_DrawRect(BlockPos.x + 54, BlockPos.y - 1 + (30 * LineRow) - 7, 232, 25, { 60,60,60 });
-            if (DetectMousePos || IsInput)In_DrawRect(BlockPos.x + 55, BlockPos.y + (30 * LineRow) - 7, 230, 23, { 20,20,20 });
-            else In_DrawRect(BlockPos.x + 55, BlockPos.y + (30 * LineRow) - 7, 230, 23, { 10,10,10 });
-            In_DrawString(BlockPos.x + 55 + 8 + 1, BlockPos.y + 6 + (30 * LineRow) - 8 +1, DrawString, { 0,0,0 }, Global_EasyGUIFont, Global_EasyGUIFontSize);
+            if (DetectMousePos || IsInput)In_DrawGradientRect(BlockPos.x + 55, BlockPos.y + (30 * LineRow) - 7, 230, 23, { 15,15,15 }, Global_EasyGUIColor / 6, true);
+            else In_DrawGradientRect(BlockPos.x + 55, BlockPos.y + (30 * LineRow) - 7, 230, 23, { 15,15,15 }, Global_EasyGUIColor / 8, true);
+            In_DrawString(BlockPos.x + 55 + 8 + 1, BlockPos.y + 6 + (30 * LineRow) - 8 + 1, DrawString, { 0,0,0 }, Global_EasyGUIFont, Global_EasyGUIFontSize);
             In_DrawString(BlockPos.x + 55 + 8, BlockPos.y + 6 + (30 * LineRow) - 8, DrawString, { 200,200,200 }, Global_EasyGUIFont, Global_EasyGUIFontSize);
             return m_String;
         }
