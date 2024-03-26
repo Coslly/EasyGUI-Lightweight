@@ -503,8 +503,16 @@ namespace EasyGUI//EasyGUI Release[2024-03-26 22:00]
             return pszMem;
         }
         //---------------------------------------------------------------------------------------------------------------------------------------------------------
-        BOOL Window_Move(short Draw_ms = 10) noexcept//移动GUI窗口 (在GUI循环线程内加入此函数不需要添加延时函数来降低CPU占用)
+        BOOL Window_Move(short Draw_ms = 5) noexcept//移动GUI窗口 (在GUI循环线程内加入此函数不需要添加延时函数来降低CPU占用)
         {
+            //--------------------------------消息循环
+            MSG msg = { 0 };
+            if (GetMessage(&msg, 0, 0, 0))
+            {
+                TranslateMessage(&msg);
+                DispatchMessage(&msg);
+            }
+            //---------------------------------------
             GetCursorPos(&EasyGUI_MousePos); GetWindowRect(EasyGUI_WindowHWND, &EasyGUI_WindowPos);//刷新坐标
             static BOOL 防止脱离 = false;
             static int OldX, OldY;//按下时坐标
