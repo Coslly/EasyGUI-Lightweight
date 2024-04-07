@@ -6,7 +6,7 @@ int main()
     EasyGUI::EasyGUI GUI_Variable;//Initialize GUI variables
     GUI_Variable.Window_Create(590, 360, "Test Windows", true);
     GUI_Variable.Window_SetAlpha(250);
-    while (1)
+    while (true)
     {
         static BOOL UI_Checkbox = false;
         static int UI_Slider_int = 5;
