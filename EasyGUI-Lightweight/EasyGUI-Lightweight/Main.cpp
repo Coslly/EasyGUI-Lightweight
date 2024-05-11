@@ -21,7 +21,7 @@ int main()
         static string UI_InputText = "Input text";
         static int UI_List = 0;
         EasyGUI::EasyGUI_IO GUI_IO = GUI_Variable.Get_IO();//Get Global Input/Output Value
-        if (!GUI_Variable.Window_Move())//MoveWindow Funtion (You must add!! cause it have MessageLoop)
+        if (!GUI_Variable.Window_Move())//MoveWindow Funtion
         {
             GUI_Variable.GUI_BackGround(true);//BackGround
             GUI_Variable.GUI_Block_Panel(30, 30, 100, 300, "Panel", { "Panel 1","Panel 2","Panel 3" }, UI_PanelSelector);
