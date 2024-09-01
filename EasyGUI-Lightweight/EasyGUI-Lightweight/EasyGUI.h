@@ -70,15 +70,21 @@ namespace EasyGUI
     }
     */
     //---------------------------------------------------------------------------------------------------------------------------------------------------------
-    LRESULT WINAPI WndProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp) noexcept//消息循环(用于解决窗口未响应问题 接收窗口消息)
+    LRESULT CALLBACK WndProc(HWND Hwnd, UINT Message, WPARAM wParam, LPARAM lParam) noexcept//消息循环(用于解决窗口未响应问题 接收窗口消息)
     {
-        switch (msg)
+        switch (Message)
         {
-        case WM_ERASEBKGND:return 1; break;
-        case WM_PAINT:return 1; break;//一直重绘
+        case WM_ERASEBKGND:return true; break;
+        case WM_PAINT:return true; break;//一直重绘
         case WM_CLOSE:exit(0); break;//接收到关闭窗口事件时返回全部线程
+        case WM_MOUSEWHEEL://鼠标滚轮事件
+        {
+            const auto Delta = GET_WHEEL_DELTA_WPARAM(wParam);
+            if (Delta > 0)keybd_event(VK_UP, 0, 0, 0);
+            else if (Delta < 0)keybd_event(VK_DOWN, 0, 0, 0);
+        } break;
         }
-        return DefWindowProc(hwnd, msg, wp, lp);//定义回调函数的返回值
+        return DefWindowProc(Hwnd, Message, wParam, lParam);//定义回调函数的返回值
     }
     //---------------------------------------------------------------------------------------------------------------------------------------------------------
     struct Vector2//用来储存坐标数据 XY
@@ -182,6 +188,8 @@ namespace EasyGUI
         int EasyGUI_FPS = 0;//EasyGUI绘制帧数 (需要后期计算得出)
         //------------------
         BOOL Mouse_Block_, Mouse_Slider_ = false;//防止控件函数之间冲突的判断变量
+        //------------------
+    public:
         //---------------------------------------------------------------------开发者函数 (方便制作GUI)
         void In_DrawRect(int X, int Y, int Width, int Length, Vector4 Color) noexcept//绘制矩形
         {
@@ -220,7 +228,7 @@ namespace EasyGUI
             vert[1].Green = GetGValue(Color2) << 8;
             vert[1].Blue = GetBValue(Color2) << 8;
             if (Gradient_Direction)GradientFill(EasyGUI_DrawHDC, vert, 2, &gRect, 1, GRADIENT_FILL_RECT_V);//渐变方向 (false:横向 true:竖向)
-            else  GradientFill(EasyGUI_DrawHDC, vert, 2, &gRect, 1, GRADIENT_FILL_RECT_H);
+            else GradientFill(EasyGUI_DrawHDC, vert, 2, &gRect, 1, GRADIENT_FILL_RECT_H);
         }
         //---------------------------------------------------------------------
         void In_DrawLine(int X, int Y, int Way_X, int Way_Y, Vector4 Color, int Line_Thickness = 1) noexcept//绘制直线
@@ -236,8 +244,8 @@ namespace EasyGUI
             if (String == "" || Fount_Size == 0)return;
             if (Fount_Size > 15)Y -= Fount_Size / 3;//平衡上下坐标
             HGDIOBJ FontPen;
-            if (AntiAlias)FontPen = SelectObject(EasyGUI_DrawHDC, CreateFontA(Fount_Size, 0, 0, 0, Font_Width, FALSE, FALSE, 0, ANSI_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, FF_DONTCARE, Fount_Name.c_str()));
-            else FontPen = SelectObject(EasyGUI_DrawHDC, CreateFontA(Fount_Size, 0, 0, 0, Font_Width, FALSE, FALSE, 0, ANSI_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, NONANTIALIASED_QUALITY, FF_DONTCARE, Fount_Name.c_str()));
+            if (AntiAlias)FontPen = SelectObject(EasyGUI_DrawHDC, CreateFontA(Fount_Size, 0, 0, 0, Font_Width, 0, 0, 0, ANSI_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, FF_DONTCARE, Fount_Name.c_str()));
+            else FontPen = SelectObject(EasyGUI_DrawHDC, CreateFontA(Fount_Size, 0, 0, 0, Font_Width, 0, 0, 0, ANSI_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, NONANTIALIASED_QUALITY, FF_DONTCARE, Fount_Name.c_str()));
             SetTextColor(EasyGUI_DrawHDC, RGB(TextColor.r, TextColor.g, TextColor.b));//文字颜色
             SetBkMode(EasyGUI_DrawHDC, TRANSPARENT);//背景透明
             if (String.find("UTT") != string::npos)//不转换UTF-8
@@ -247,7 +255,7 @@ namespace EasyGUI
                 DeleteObject(FontPen);
             }
             else {//转换UTF-8
-                const auto len = MultiByteToWideChar(CP_UTF8, 0, String.c_str(), -1, NULL, 0);//转码 UTF-8 (为了显示中文)
+                const auto len = MultiByteToWideChar(CP_UTF8, 0, String.c_str(), -1, 0, 0);//转码 UTF-8 (为了显示中文)
                 wchar_t* wide_text = new wchar_t[len];
                 MultiByteToWideChar(CP_UTF8, 0, String.c_str(), -1, wide_text, len);//转码 UTF-8 (为了显示中文)
                 TextOutW(EasyGUI_DrawHDC, X, Y, wide_text, len - 1);
@@ -259,7 +267,7 @@ namespace EasyGUI
         void In_DrawString_Simple(int X, int Y, string String, Vector4 TextColor = { 255,255,255 }) noexcept//绘制简单文字
         {
             if (String == "")return;
-            HGDIOBJ FontPen = SelectObject(EasyGUI_DrawHDC, CreateFontA(12, 0, 0, 0, FW_NORMAL, FALSE, FALSE, 0, ANSI_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, NONANTIALIASED_QUALITY, FF_DONTCARE, "Small Fonts"));
+            HGDIOBJ FontPen = SelectObject(EasyGUI_DrawHDC, CreateFontA(12, 0, 0, 0, FW_NORMAL, 0, 0, 0, ANSI_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, NONANTIALIASED_QUALITY, FF_DONTCARE, "Small Fonts"));
             SetBkMode(EasyGUI_DrawHDC, TRANSPARENT);//背景透明
             SetTextColor(EasyGUI_DrawHDC, RGB(0, 0, 0));//文字颜色
             TextOutA(EasyGUI_DrawHDC, X + 1, Y + 1, String.c_str(), strlen(String.c_str()));
@@ -302,8 +310,6 @@ namespace EasyGUI
             if (Tick - OldTick >= Time_MS) { OldTick = Tick; return true; }//当达到一定数值返回并且重写变量
             else return false;
         }
-        //---------------------------------------------------------------------
-    public:
         //---------------------------------------------------------------------------------------------------------------------------------------------------------
         void Global_Set_EasyGUI_Font(string FontName) noexcept { Global_EasyGUIFont = FontName; }//设置全局GUI字体
         void Global_Set_EasyGUI_FontSize(int FontSize) noexcept { Global_EasyGUIFontSize = FontSize; }//设置全局GUI字体大小
@@ -349,6 +355,7 @@ namespace EasyGUI
             if (ReverseColor)BitBlt(EasyGUI_DrawHDC, 0, 0, PaintSize.x, PaintSize.y, EasyGUI_DrawHDC, 0, 0, PATINVERT);//反转颜色
             BitBlt(EasyGUI_WindowHDC, 0, 0, PaintSize.x, PaintSize.y, EasyGUI_DrawHDC, 0, 0, SRCCOPY);//最终绘制内存中的图像
             //--------------------------------消息循环
+            In_KeyEvent(VK_UP, true); In_KeyEvent(VK_DOWN, true);//释放滚轮消息
             MSG msg = { 0 }; if (GetMessage(&msg, 0, 0, 0)) { TranslateMessage(&msg); DispatchMessage(&msg); }
             GetCursorPos(&EasyGUI_MousePos); GetWindowRect(EasyGUI_WindowHWND, &EasyGUI_WindowPos);//刷新鼠标窗口坐标
             //--------------------------------帧数计算
@@ -421,27 +428,29 @@ namespace EasyGUI
             MSG msg = { 0 }; if (GetMessage(&msg, 0, 0, 0)) { TranslateMessage(&msg); DispatchMessage(&msg); }
             GetCursorPos(&EasyGUI_MousePos); GetWindowRect(EasyGUI_WindowHWND, &EasyGUI_WindowPos);//刷新鼠标窗口坐标
             //---------------------------------------
-            static BOOL 防止脱离, 保存鼠标坐标;
-            static Vector2 OldPos;//按下时坐标
+            static BOOL 防止脱离, 保存鼠标坐标; static Vector2 OldPos;//按下时坐标
             if (GetForegroundWindow() == EasyGUI_WindowHWND)//检测窗口是否在最前端
             {
-                if (!Mouse_Block_ && In_KeyEvent(VK_LBUTTON) && !防止脱离)//当鼠标指针不在Block上则可以移动窗口
+                if (!Mouse_Block_ && In_KeyEvent(VK_LBUTTON) && !防止脱离)//触发移动窗口机制
                 {
                     if (保存鼠标坐标) { OldPos = { EasyGUI_MousePos.x - EasyGUI_WindowPos.left ,EasyGUI_MousePos.y - EasyGUI_WindowPos.top }; 保存鼠标坐标 = false; }
-                    MoveWindow(EasyGUI_WindowHWND, EasyGUI_MousePos.x - OldPos.x, EasyGUI_MousePos.y - OldPos.y, EasyGUI_WindowPos.right - EasyGUI_WindowPos.left, EasyGUI_WindowPos.bottom - EasyGUI_WindowPos.top, true);//移动窗口到鼠标坐标
-                    防止脱离 = true;
+                    防止脱离 = true;//触发移动窗口事件变量
                 }
-                else if (防止脱离 && In_KeyEvent(VK_LBUTTON))
+                else if (防止脱离 && In_KeyEvent(VK_LBUTTON))//移动窗口时
                 {
                     Mouse_Block_ = true;
                     MoveWindow(EasyGUI_WindowHWND, EasyGUI_MousePos.x - OldPos.x, EasyGUI_MousePos.y - OldPos.y, EasyGUI_WindowPos.right - EasyGUI_WindowPos.left, EasyGUI_WindowPos.bottom - EasyGUI_WindowPos.top, true);//移动窗口到鼠标坐标
                     if (In_TickSleep<class CLASS_EasyGUI_WindowMove_FPS_Delay_>(100))return false;//定时返回false (用来刷新面板)
                     else return true;
                 }
-                else {
+                else {//闲置时
                     防止脱离 = false; 保存鼠标坐标 = true; Mouse_Block_ = false;
-                    if (In_KeyEvent(VK_LBUTTON))Sleep(1);
-                    else Sleep(Draw_Delay);//降低CPU占用
+                    if (!Mouse_Slider_)
+                    {
+                        if (In_KeyEvent(VK_LBUTTON))Sleep(1);
+                        else Sleep(Draw_Delay);//降低CPU占用
+                    }
+                    else this_thread::sleep_for(chrono::nanoseconds(80));//纳秒休眠函数 (让滑条更加顺滑)
                     return false;
                 }
             }
@@ -485,17 +494,17 @@ namespace EasyGUI
             if (BackGround_StyleCode == 0)//毛都没有
             {
                 彩虹条颜色 = { 16,16,16,16,16,16,16,16,16 };
-                主题颜色 = { 0,0,0,60,60,60,30,30,30,15,15,15,15,15,15,Global_EasyGUIColor.r / 7,Global_EasyGUIColor.g / 7 ,Global_EasyGUIColor.b / 7 };
+                主题颜色 = { 0,0,0,60,60,60,30,30,30,15,15,15,15,15,15,Global_EasyGUIColor.r / 10,Global_EasyGUIColor.g / 10,Global_EasyGUIColor.b / 10 };
             }
             else if (BackGround_StyleCode == 1)//仿
             {
                 彩虹条颜色 = { 100,255,255,255,100,255,255,255,100 };
-                主题颜色 = { 0,0,0,60,60,60,30,30,30,15,15,15,5,5,5,Global_EasyGUIColor.r / 7,Global_EasyGUIColor.g / 7 ,Global_EasyGUIColor.b / 7 };
+                主题颜色 = { 0,0,0,60,60,60,30,30,30,15,15,15,5,5,5,Global_EasyGUIColor.r / 10,Global_EasyGUIColor.g / 10,Global_EasyGUIColor.b / 10 };
             }
             else if (BackGround_StyleCode == 2)//仿2
             {
                 彩虹条颜色 = { 0,255,255,255,0,255,255,255,0 };
-                主题颜色 = { 0,0,0,60,60,60,30,30,30,15,15,15,3,3,3,Global_EasyGUIColor.r / 7,Global_EasyGUIColor.g / 7 ,Global_EasyGUIColor.b / 7 };
+                主题颜色 = { 0,0,0,60,60,60,30,30,30,15,15,15,3,3,3,Global_EasyGUIColor.r / 10,Global_EasyGUIColor.g / 10,Global_EasyGUIColor.b / 10 };
             }
             else if (BackGround_StyleCode == 3)//彩色变色渐变条*****************
             {
@@ -511,7 +520,7 @@ namespace EasyGUI
                     (int)floor(sin((float)GetTickCount64() / Speed * 2 + 3) * 127 + 128),
                     (int)floor(sin((float)GetTickCount64() / Speed * 2 + 5) * 127 + 128),
                 };
-                主题颜色 = { 0,0,0,60,60,60,30,30,30,15,15,15,3,3,3, Global_EasyGUIColor.r / 7,Global_EasyGUIColor.g / 7 ,Global_EasyGUIColor.b / 7 };
+                主题颜色 = { 0,0,0,60,60,60,30,30,30,15,15,15,3,3,3,Global_EasyGUIColor.r / 10,Global_EasyGUIColor.g / 10,Global_EasyGUIColor.b / 10 };
                 Global_EasyGUIColor = { 彩虹条颜色[3],彩虹条颜色[4], 彩虹条颜色[5] };
             }
             else if (BackGround_StyleCode == 4)//主题色渐变条*****************
@@ -530,7 +539,7 @@ namespace EasyGUI
                     (int)(Sins.x * Global_EasyGUIColor.b / 2 + Global_EasyGUIColor.b / 2)
                 };
                 const auto Min = 50; for (int i = 0; i <= 8; ++i)if (彩虹条颜色[i] < Min)彩虹条颜色[i] = Min;//颜色最小值
-                主题颜色 = { 0,0,0,60,60,60,30,30,30,15,15,15,0,0,0,Global_EasyGUIColor.r / 7,Global_EasyGUIColor.g / 7,Global_EasyGUIColor.b / 7 };
+                主题颜色 = { 0,0,0,60,60,60,30,30,30,15,15,15,0,0,0,Global_EasyGUIColor.r / 10,Global_EasyGUIColor.g / 10,Global_EasyGUIColor.b / 10 };
             }
             In_DrawRect(0, 0, Window_Size.x, Window_Size.y, { 主题颜色[0], 主题颜色[1], 主题颜色[2] });
             In_DrawRect(1, 1, Window_Size.x - 2, Window_Size.y - 2, { 主题颜色[3], 主题颜色[4], 主题颜色[5] });
@@ -557,12 +566,12 @@ namespace EasyGUI
             return { X,Y };
         }
         //---------------------------------------------------------------------------------------------------------------------------------------------------------
-        int GUI_Block_Panel(int X, int Y, int Width, int Length, string BlockText, vector<string>BlockText_, int& m_In_Block) noexcept//区块_大区块选择器
+        int GUI_Block_Panel(int X, int Y, int Width, int Length, string BlockText, vector<string>BlockText_, int& m_In_Block, short TextPos_X = 20) noexcept//区块_大区块选择器
         {
             if (m_In_Block < 0)m_In_Block = 0; else if (m_In_Block >= BlockText_.size())m_In_Block = BlockText_.size() - 1;//范围限制
             In_DrawRect(X, Y, Width, Length, { 0,0,0 });//黑色外边框
             In_DrawRect(X + 1, Y + 1, Width - 2, Length - 2, { 60,60,60 });//白色外边框
-            In_DrawGradientRect(X + 2, Y + 2, Width - 4, Length - 4, Global_EasyGUIColor / 8, { 10,10,10 }, true);//主题色渐变背景
+            In_DrawGradientRect(X + 2, Y + 2, Width - 4, Length - 4, Global_EasyGUIColor / 10, { 10,10,10 }, true);//主题色渐变背景
             In_DrawString(X + 16, Y - 6, BlockText.c_str(), { 0,0,0 }, "Small Fonts", 14, 700);
             In_DrawString(X + 15, Y - 7, BlockText.c_str(), { 200,200,200 }, "Small Fonts", 14, 700);
             for (short i = 0; i < BlockText_.size(); ++i)//遍历坐标
@@ -578,8 +587,8 @@ namespace EasyGUI
                     In_DrawGradientRect(X + 2, Y + 16 + 30 * i, Width - 4, 23, Global_EasyGUIColor / 5, { 20,20,20 });
                     if (GetForegroundWindow() == EasyGUI_WindowHWND && !Mouse_Slider_ && In_KeyEvent(VK_LBUTTON, true))m_In_Block = i;
                 }
-                In_DrawString(X + 21, Y + 21 + 30 * i, BlockText_[i], { 0,0,0 }, Global_EasyGUIFont, Global_EasyGUIFontSize + 2);
-                In_DrawString(X + 20, Y + 20 + 30 * i, BlockText_[i], { 220,220,220 }, Global_EasyGUIFont, Global_EasyGUIFontSize + 2);
+                In_DrawString(X + TextPos_X + 1, Y + 21 + 30 * i, BlockText_[i], { 0,0,0 }, Global_EasyGUIFont, Global_EasyGUIFontSize + 2);
+                In_DrawString(X + TextPos_X, Y + 20 + 30 * i, BlockText_[i], { 220,220,220 }, Global_EasyGUIFont, Global_EasyGUIFontSize + 2);
             }
             if ((EasyGUI_MousePos.x - EasyGUI_WindowPos.left >= X && EasyGUI_MousePos.x - EasyGUI_WindowPos.left <= X + Width && EasyGUI_MousePos.y - EasyGUI_WindowPos.top >= Y && EasyGUI_MousePos.y - EasyGUI_WindowPos.top <= Y + Length) || !(EasyGUI_MousePos.x >= EasyGUI_WindowPos.left && EasyGUI_MousePos.x <= EasyGUI_WindowPos.right && EasyGUI_MousePos.y >= EasyGUI_WindowPos.top && EasyGUI_MousePos.y <= EasyGUI_WindowPos.bottom))Mouse_Block_ = true;
             return m_In_Block;
@@ -878,7 +887,6 @@ namespace EasyGUI
                 SetClipboardData(1, hHandle);//设置剪切板数据
                 GlobalUnlock(hHandle);//解除锁定
                 CloseClipboard();//关闭剪切板
-                Beep(100, 20);//复制成功提醒
             }
             for (short Color_Bl = 0; Color_Bl <= 2; ++Color_Bl)
             {
@@ -888,8 +896,8 @@ namespace EasyGUI
                 {
                     if (In_KeyEvent(VK_LBUTTON, true))UsedColor[Color_Bl]++;
                     else if (In_KeyEvent(VK_RBUTTON, true))UsedColor[Color_Bl]--;
-                    if (In_KeyEvent(VK_LEFT, true))UsedColor[Color_Bl] += 5;
-                    else if (In_KeyEvent(VK_RIGHT, true))UsedColor[Color_Bl] -= 5;
+                    if (In_KeyEvent(VK_LEFT, true) || In_KeyEvent(VK_UP, true))UsedColor[Color_Bl] += 5;
+                    else if (In_KeyEvent(VK_RIGHT, true) || In_KeyEvent(VK_DOWN, true))UsedColor[Color_Bl] -= 5;
                 }
                 if (UsedColor[Color_Bl] >= 255)UsedColor[Color_Bl] = 255;
                 else if (UsedColor[Color_Bl] <= 0)UsedColor[Color_Bl] = 0;//范围限制
@@ -919,7 +927,6 @@ namespace EasyGUI
                 SetClipboardData(1, hHandle);//设置剪切板数据
                 GlobalUnlock(hHandle);//解除锁定
                 CloseClipboard();//关闭剪切板
-                Beep(100, 20);//复制成功提醒
             }
             for (short Color_Bl = 0; Color_Bl <= 3; ++Color_Bl)
             {
@@ -929,8 +936,8 @@ namespace EasyGUI
                 {
                     if (In_KeyEvent(VK_LBUTTON, true))UsedColor[Color_Bl]++;
                     else if (In_KeyEvent(VK_RBUTTON, true))UsedColor[Color_Bl]--;
-                    if (In_KeyEvent(VK_LEFT, true))UsedColor[Color_Bl] += 5;
-                    else if (In_KeyEvent(VK_RIGHT, true))UsedColor[Color_Bl] -= 5;
+                    if (In_KeyEvent(VK_LEFT, true) || In_KeyEvent(VK_UP, true))UsedColor[Color_Bl] += 5;
+                    else if (In_KeyEvent(VK_RIGHT, true) || In_KeyEvent(VK_DOWN, true))UsedColor[Color_Bl] -= 5;
                 }
                 if (UsedColor[Color_Bl] >= 255)UsedColor[Color_Bl] = 255;//范围限制
                 else if (UsedColor[Color_Bl] <= 0)UsedColor[Color_Bl] = 0;
@@ -961,8 +968,8 @@ namespace EasyGUI
                     else if (In_KeyEvent(VK_RBUTTON, true))UsedPos[Color_Bl] -= 0.03;
                     if (In_KeyEvent(VK_LEFT, true))UsedPos[Color_Bl] += 1;
                     else if (In_KeyEvent(VK_RIGHT, true))UsedPos[Color_Bl] -= 1;
-                    if (In_KeyEvent(VK_UP))UsedPos[Color_Bl] += 10;//快速变值
-                    else if (In_KeyEvent(VK_DOWN))UsedPos[Color_Bl] -= 10;
+                    if (In_KeyEvent(VK_UP, true))UsedPos[Color_Bl] += 10;//快速变值
+                    else if (In_KeyEvent(VK_DOWN, true))UsedPos[Color_Bl] -= 10;
                     m_PosValue = { UsedPos[0],UsedPos[1],UsedPos[2] };
                 }
                 In_DrawRect(BlockPos.x + 180 + 70 * Color_Bl, BlockPos.y - 6 + 30 * LineRow, 70, 20, { 0,0,0 });
@@ -984,7 +991,7 @@ namespace EasyGUI
             if (m_InLine < 0)m_InLine = 0; else if (m_InLine >= LineString.size())m_InLine = LineString.size() - 1;//范围限制
             if (!LimitLine)LimitLine = LineString.size();
             In_DrawRect(BlockPos.x + 53, BlockPos.y - 10 + 30 * StartLineRow, 234, LimitLine * 25 + 5, { 0,0,0 });//黑色外边框
-            In_DrawGradientRect(BlockPos.x + 54, BlockPos.y - 9 + 30 * StartLineRow, 232, LimitLine * 25 + 3, Global_EasyGUIColor / 8, { 10,10,10 }, true);//主题色渐变背景
+            In_DrawGradientRect(BlockPos.x + 54, BlockPos.y - 9 + 30 * StartLineRow, 232, LimitLine * 25 + 3, Global_EasyGUIColor / 10, { 10,10,10 }, true);//主题色渐变背景
             for (short i = 0; i < LineString.size(); ++i)
             {
                 if (i >= LimitLine)continue;//限制行数
@@ -1014,7 +1021,7 @@ namespace EasyGUI
         template<class CreateClassName>
         string GUI_InputText(Vector2 BlockPos, short LineRow, string& m_String, string NormalText = "") noexcept//字符串输入框 (英文数字 不支持UTF-8 最多30个字符)
         {
-            if (BlockPos.x == 0 && BlockPos.y == 0)return false;//当无block则不进行绘制
+            if (BlockPos.x == 0 && BlockPos.y == 0)return "";//当无block则不进行绘制
             const BOOL DetectMousePos = In_MouseEventJudgment(BlockPos.x + 55, BlockPos.y + 30 * LineRow - 9, 230, 25);//窗口检测机制
             static BOOL IsInput = false;//判断是否在输入变量
             string DrawString = m_String;//绘制字符串
@@ -1035,7 +1042,6 @@ namespace EasyGUI
                             SetClipboardData(1, hHandle);//设置剪切板数据
                             GlobalUnlock(hHandle);//解除锁定
                             CloseClipboard();//关闭剪切板
-                            Beep(100, 20);//复制成功提醒
                         }
                         if (In_KeyEvent(0x56, true))//Ctrl + V 粘贴
                         {
@@ -1047,7 +1053,6 @@ namespace EasyGUI
                                 GlobalUnlock(h);//解除锁定
                             }
                             CloseClipboard();//关闭剪贴板
-                            Beep(100, 20);//粘贴成功提醒
                         }
                     }
                     for (int i = 0x8; i < 0xFE; ++i)//VK键码遍历 (检测按下了什么键)
