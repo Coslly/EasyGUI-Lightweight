@@ -7,7 +7,7 @@ Projects starting January 2023!
 Which projects use it?
 - [Rensen](https://github.com/Coslly/Rensen.git)
 - [TaHack](https://github.com/Coslly/TaHack.git)
-- [TaHack](https://github.com/Coslly/FreeCS.git)
+- [FreeCS](https://github.com/Coslly/FreeCS.git)
 ## 😀Features
 - For people(beginner,student)
 - C++ worker
