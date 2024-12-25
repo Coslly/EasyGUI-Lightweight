@@ -1,7 +1,7 @@
 # 🤖EasyGUI-Lightweight
 Lightweight GUI library for C++.
 
-Projects starting January 2023!
+Projects started January 2023!
 
 
 Which projects use it?
