@@ -52,7 +52,7 @@ while (1)
     const auto Block = GUI_Variable.GUI_Block(30, 30, 300, "Test Block");//Block
 
     GUI_Variable.GUI_Checkbox(Block, 1, "Checkbox", UI_Checkbox);
-    GUI_Variable.GUI_Button(Block, 2, "Button", 90, UI_Button);
+    GUI_Variable.GUI_Button(Block, 2, "Button", UI_Button);
     //Draw
     GUI_Variable.Draw_GUI();
     Sleep(1);
@@ -73,7 +73,7 @@ while (1)
         const auto Block = GUI_Variable.GUI_Block(30, 30, 300, "Test Block");//Block
 
         GUI_Variable.GUI_Checkbox(Block, 1, "Checkbox", UI_Checkbox);
-        GUI_Variable.GUI_Button(Block, 2, "Button", 90, UI_Button);
+        GUI_Variable.GUI_Button(Block, 2, "Button", UI_Button);
         //Draw
         GUI_Variable.Draw_GUI();
     }
@@ -120,7 +120,7 @@ int main()
 
             GUI_Variable.GUI_Checkbox(Block, 1, "Checkbox", UI_Checkbox);
             GUI_Variable.GUI_Slider<int, class GUI_Class_1>(Block, 2, "Slider", 0, 10, UI_Slider);
-            GUI_Variable.GUI_Button(Block, 3, "Button", 90, UI_Button);
+            GUI_Variable.GUI_Button(Block, 3, "Button", UI_Button);
 
             //Draw
             GUI_Variable.Draw_GUI();
