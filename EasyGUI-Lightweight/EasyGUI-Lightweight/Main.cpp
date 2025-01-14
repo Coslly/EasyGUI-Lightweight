@@ -1,29 +1,29 @@
 ﻿#include "EasyGUI.h"
 int main()
 {
-    ShowWindow(GetConsoleWindow(), true);//Show Console Window
+    ShowWindow(GetConsoleWindow(), TRUE);//Show Console Window
     system("cls"); printf("EasyGUI-Lightweight\nGithub: https://github.com/Coslly/EasyGUI-Lightweight.git\n");
     EasyGUI::EasyGUI GUI_Variable;//Initialize GUI variables
-    GUI_Variable.Window_Create(590, 360, "Test Windows", true);
+    GUI_Variable.Window_Create(590, 360, "Test Windows", TRUE);
     GUI_Variable.Window_SetAlpha(250);
-    while (true)
+    while (TRUE)
     {
-        static BOOL UI_Checkbox = false;
+        static BOOL UI_Checkbox = FALSE;
         static int UI_Slider_int = 5;
         static float UI_Slider_float = 5;
-        static BOOL UI_Button = false;
-        static BOOL UI_Button_Small = false;
+        static BOOL UI_Button = FALSE;
+        static BOOL UI_Button_Small = FALSE;
         static int UI_KeySelector = 4;
-        static BOOL UI_InvertScreenColor = false;
+        static BOOL UI_InvertScreenColor = FALSE;
         static EasyGUI::Vector4 UI_ColorSelector = { 255,255,255 };
-        static EasyGUI::Vector3 UI_PosSelector = { 0.23,100,1000 };
+        static EasyGUI::Vector3 UI_PosSelector = { 0.23f,100.f,1000.f };
         static int UI_PanelSelector = 0;
-        static string UI_InputText = "Input text";
+        static std::string UI_InputText = "Input text";
         static int UI_List = 0;
         EasyGUI::EasyGUI_IO GUI_IO = GUI_Variable.Get_IO();//Get Global Input/Output Value
         if (!GUI_Variable.Window_Move())//MoveWindow Funtion
         {
-            GUI_Variable.GUI_BackGround(true);//BackGround
+            GUI_Variable.GUI_BackGround(TRUE);//BackGround
             GUI_Variable.GUI_Block_Panel<class CALSS_EasyGUI_1>(30, 30, 100, 300, "Panel", { "Panel 1","Panel 2","Panel 3" }, UI_PanelSelector);
             if (UI_PanelSelector == 0)//Panel 1 Screen
             {
@@ -35,7 +35,7 @@ int main()
                 GUI_Variable.GUI_Button(Block, 4, "Button", UI_Button);
                 static auto ButtonClick = 0;
                 if (UI_Button || UI_Button_Small)ButtonClick++;
-                GUI_Variable.GUI_Text(Block, 5, "Button hit: " + to_string(ButtonClick));
+                GUI_Variable.GUI_Text(Block, 5, "Button hit: " + std::to_string(ButtonClick));
                 GUI_Variable.GUI_Checkbox(Block, 6, "Invert screen color", UI_InvertScreenColor);
                 GUI_Variable.GUI_Text(Block, 7, "Main color");
                 GUI_Variable.GUI_ColorSelector(Block, 7, UI_ColorSelector);
@@ -43,7 +43,7 @@ int main()
                 GUI_Variable.GUI_Text(Block, 8, "Pos selector");
                 GUI_Variable.GUI_PosSelector(Block, 8, UI_PosSelector);
                 GUI_Variable.GUI_Button_Small(Block, 2, UI_Button_Small);
-                GUI_Variable.GUI_Text(Block, 9, "FPS: " + to_string(GUI_IO.DrawFPS));
+                GUI_Variable.GUI_Text(Block, 9, "FPS: " + std::to_string(GUI_IO.DrawFPS));
                 GUI_Variable.GUI_Tip(Block, 1, "Some tips");
             }
             else if (UI_PanelSelector == 1)//Panel 2 Screen
