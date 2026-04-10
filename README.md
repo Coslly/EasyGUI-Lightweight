@@ -6,11 +6,6 @@ Projects started January 2023!
 This repository is no longer maintained or updated.
 
 Please refer to the new repository: https://github.com/Coslly/EasyGUI
-
-Which projects use it?
-- [Rensen](https://github.com/Coslly/Rensen.git)
-- [TaHack](https://github.com/Coslly/TaHack.git)
-- [FreeCS](https://github.com/Coslly/FreeCS.git)
 ## 😀Features
 - For people(beginner,student)
 - C++ worker
