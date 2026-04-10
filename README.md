@@ -3,9 +3,9 @@ Lightweight GUI library for C++.
 
 Projects started January 2023!
 
-This repository is no longer maintained or updated.
+*This repository is no longer maintained or updated.*
 
-Please refer to the new repository: https://github.com/Coslly/EasyGUI
+*Please refer to the new repository: https://github.com/Coslly/EasyGUI*
 ## 😀Features
 - For people(beginner,student)
 - C++ worker
